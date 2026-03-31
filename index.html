@@ -1,80 +1,60 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SQL Generator</title>
-  <style>
-    :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --surface2: #22263a;
-      --border: #2e3350;
-      --accent: #6c8af7;
-      --danger: #f87171;
-      --warn: #fbbf24;
-      --success: #34d399;
-      --text: #e2e8f0;
-      --muted: #8892b0;
-      --radius: 8px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
-    header h1 { font-size: 1.4rem; font-weight: 700; }
-    header .badge { font-size: 0.75rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
-    .wrap { max-width: 1300px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 24px; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
-    .field-label { font-size: 0.78rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
-    input[type=text], input[type=number], select {
-      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
-      padding: 9px 11px; color: var(--text); font-size: 0.9rem; outline: none;
-      transition: border-color 0.2s; width: 100%;
-    }
-    input[type=text]:focus, input[type=number]:focus, select:focus { border-color: var(--accent); }
-    input:disabled, select:disabled { opacity: 0.25; cursor: not-allowed; }
-    input.invalid { border-color: var(--danger) !important; }
-    .err-tip { font-size: 0.72rem; color: var(--danger); margin-top: 2px; display: none; }
-    .err-tip.show { display: block; }
-    .btn { border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: opacity .15s, transform .1s; }
-    .btn:hover { opacity: .85; transform: translateY(-1px); }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn-danger  { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; font-size: 0.8rem; }
-    .btn-copy    { background: var(--surface2); border: 1px solid var(--border); color: var(--accent); padding: 6px 14px; font-size: 0.82rem; }
-    .btn-copy.copied { background: var(--success); color: #0f1117; border-color: var(--success); }
-    /* 9-col grid: name | type | size | default | PK | NN | FK | del */
-    .col-grid { display: grid; grid-template-columns: 1.5fr 1.6fr 0.8fr 1.2fr 2.6rem 2.6rem 2.6rem 2rem; gap: 7px; align-items: start; }
-    .col-hdr { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-    .col-hdr.center { text-align: center; }
-    .cb-wrap { display: flex; justify-content: center; padding-top: 10px; }
-    input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
-    .tables-list { display: flex; flex-direction: column; gap: 20px; }
-    .empty-msg { text-align: center; padding: 36px; color: var(--muted); }
-    .output-tabs { display: flex; gap: 8px; }
-    .tab { padding: 7px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all .15s; }
-    .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .out-wrap { position: relative; margin-top: 14px; }
-    pre { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 70px 20px 20px; font-size: 0.9rem; line-height: 1.9; overflow-x: auto; white-space: pre; color: #a9c5e8; min-height: 100px; font-family: 'Fira Code','Cascadia Code','Consolas',monospace; }
-    .out-actions { position: absolute; top: 10px; right: 12px; }
-    .kw { color: #c792ea; font-weight: 700; }
-    .ty { color: #f78c6c; }
-    .cm { color: #546e7a; font-style: italic; }
-    .st { color: #c3e88d; }
-    /* FK panel */
-    .fk-panel { margin-top: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; }
-    .fk-panel select { font-size: 0.84rem; padding: 6px 8px; }
-    .fk-row { display: flex; gap: 6px; align-items: center; }
-    .fk-row label { font-size: 0.75rem; color: var(--muted); white-space: nowrap; min-width: 60px; }
-    .col-cell { display: flex; flex-direction: column; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL Generator</title>
+<style>
+:root{
+  --bg:#0f1117;--s1:#1a1d27;--s2:#22263a;--bd:#2e3350;
+  --ac:#6c8af7;--dn:#f87171;--ok:#34d399;--tx:#e2e8f0;--mt:#8892b0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+header{background:var(--s1);border-bottom:1px solid var(--bd);padding:16px 32px;display:flex;align-items:center;gap:12px}
+header h1{font-size:1.4rem;font-weight:700}
+.badge{font-size:.75rem;background:var(--ac);color:#fff;padding:2px 8px;border-radius:99px;font-weight:600}
+.wrap{max-width:1300px;margin:0 auto;padding:32px 20px;display:flex;flex-direction:column;gap:24px}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:24px}
+.lbl{font-size:.78rem;color:var(--mt);font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+input[type=text],select{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:9px 11px;color:var(--tx);font-size:.9rem;outline:none;transition:border-color .2s;width:100%}
+input[type=text]:focus,select:focus{border-color:var(--ac)}
+input:disabled,select:disabled{opacity:.25;cursor:not-allowed}
+input.bad{border-color:var(--dn)!important}
+.errtip{font-size:.7rem;color:var(--dn);margin-top:2px;min-height:14px}
+.btn{border:none;border-radius:6px;padding:8px 16px;font-size:.85rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s}
+.btn:hover{opacity:.8}
+.bp{background:var(--ac);color:#fff}
+.bg{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}
+.bd2{background:transparent;border:1px solid var(--dn);color:var(--dn);padding:5px 10px;font-size:.8rem}
+.bc{background:var(--s2);border:1px solid var(--bd);color:var(--ac);padding:6px 14px;font-size:.82rem}
+.bc.ok{background:var(--ok);color:#0f1117;border-color:var(--ok)}
+/* col grid: name | type | size | default | PK | NN | FK | del */
+.cg{display:grid;grid-template-columns:1.5fr 1.6fr .85fr 1.3fr 2.6rem 2.6rem 2.6rem 2rem;gap:7px;align-items:start;margin-top:8px}
+.ch{font-size:.72rem;color:var(--mt);font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.cc{text-align:center}
+.cbw{display:flex;justify-content:center;padding-top:10px}
+input[type=checkbox]{width:15px;height:15px;accent-color:var(--ac);cursor:pointer}
+.tlist{display:flex;flex-direction:column;gap:20px}
+.empty{text-align:center;padding:36px;color:var(--mt)}
+.tabs{display:flex;gap:8px}
+.tab{padding:7px 18px;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:transparent;color:var(--mt);transition:all .15s}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.outwrap{position:relative;margin-top:14px}
+pre{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:20px 70px 20px 20px;font-size:.9rem;line-height:1.9;overflow-x:auto;white-space:pre;color:#a9c5e8;min-height:100px;font-family:'Fira Code','Consolas',monospace}
+.outact{position:absolute;top:10px;right:12px}
+.fkpanel{margin-top:6px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;grid-column:1/-1}
+.fkrow{display:flex;gap:6px;align-items:center}
+.fkrow label{font-size:.75rem;color:var(--mt);white-space:nowrap;min-width:70px}
+.kw{color:#c792ea;font-weight:700}.ty{color:#f78c6c}.cm{color:#546e7a;font-style:italic}.st{color:#c3e88d}
+</style>
 </head>
 <body>
 <header>
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-    <rect x="3" y="5"    width="18" height="3" rx="1.5" fill="#6c8af7"/>
+    <rect x="3" y="5" width="18" height="3" rx="1.5" fill="#6c8af7"/>
     <rect x="3" y="10.5" width="18" height="3" rx="1.5" fill="#a78bfa"/>
-    <rect x="3" y="16"   width="18" height="3" rx="1.5" fill="#34d399"/>
+    <rect x="3" y="16" width="18" height="3" rx="1.5" fill="#34d399"/>
   </svg>
   <h1>SQL Generator</h1>
   <span class="badge">GitHub Pages</span>
@@ -82,515 +62,388 @@
 
 <div class="wrap">
   <div class="card">
-    <span class="field-label">데이터베이스 이름</span>
-    <input type="text" id="dbName" placeholder="my_database" style="max-width:360px" />
+    <span class="lbl">데이터베이스 이름</span>
+    <input type="text" id="dbName" placeholder="my_database" style="max-width:360px" oninput="renderSQL()">
   </div>
 
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <span style="font-size:1.05rem;font-weight:700">테이블 목록</span>
-      <button class="btn btn-primary" id="btnAddTable">＋ 테이블 추가</button>
+      <button class="btn bp" onclick="addTable()">＋ 테이블 추가</button>
     </div>
-    <div class="tables-list" id="tablesList">
-      <div class="empty-msg">테이블을 추가해보세요 👆</div>
-    </div>
+    <div class="tlist" id="tlist"><div class="empty">테이블을 추가해보세요 👆</div></div>
   </div>
 
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:1.05rem;font-weight:700">생성된 SQL</span>
-      <div class="output-tabs">
-        <button class="tab active" data-tab="mysql">MySQL</button>
-        <button class="tab"        data-tab="pg">PostgreSQL</button>
+      <div class="tabs">
+        <button class="tab on" id="tab-mysql" onclick="switchTab('mysql')">MySQL</button>
+        <button class="tab" id="tab-pg" onclick="switchTab('pg')">PostgreSQL</button>
       </div>
     </div>
-    <div class="out-wrap">
-      <pre id="sqlOut"><span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span></pre>
-      <div class="out-actions">
-        <button class="btn btn-copy" id="btnCopy">📋 복사</button>
-      </div>
+    <div class="outwrap">
+      <pre id="sqlout"><span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span></pre>
+      <div class="outact"><button class="btn bc" id="copybtn" onclick="copySQL()">📋 복사</button></div>
     </div>
   </div>
 </div>
 
 <script>
-/* ============================================================
-   TYPES  — hasExtra: 크기/값 입력 필요
-            maxVal: 최대값 (단일 숫자) or [maxP, maxS] (DECIMAL)
-============================================================ */
-const TYPES = [
-  // 정수
-  { v:'TINYINT',    label:'TINYINT',                 hasExtra:false },
-  { v:'SMALLINT',   label:'SMALLINT',                hasExtra:false },
-  { v:'MEDIUMINT',  label:'MEDIUMINT',               hasExtra:false },
-  { v:'INT',        label:'INT',                     hasExtra:false },
-  { v:'BIGINT',     label:'BIGINT',                  hasExtra:false },
-  { v:'SERIAL',     label:'SERIAL / AUTO_INCREMENT',  hasExtra:false },
-  // 실수
-  { v:'FLOAT',      label:'FLOAT',                   hasExtra:false },
-  { v:'DOUBLE',     label:'DOUBLE / REAL',            hasExtra:false },
-  { v:'DECIMAL',    label:'DECIMAL(p,s)',             hasExtra:true,  ph:'10,2',   maxVal:[65,30] },
-  // 문자
-  { v:'CHAR',       label:'CHAR(n)',                  hasExtra:true,  ph:'10',     maxVal:255   },
-  { v:'VARCHAR',    label:'VARCHAR(n)',               hasExtra:true,  ph:'255',    maxVal:65535 },
-  { v:'TINYTEXT',   label:'TINYTEXT',                hasExtra:false },
-  { v:'TEXT',       label:'TEXT',                    hasExtra:false },
-  { v:'MEDIUMTEXT', label:'MEDIUMTEXT',               hasExtra:false },
-  { v:'LONGTEXT',   label:'LONGTEXT',                hasExtra:false },
-  // 이진
-  { v:'BINARY',     label:'BINARY(n)',               hasExtra:true,  ph:'16',     maxVal:255   },
-  { v:'VARBINARY',  label:'VARBINARY(n)',             hasExtra:true,  ph:'255',    maxVal:65535 },
-  { v:'TINYBLOB',   label:'TINYBLOB',                hasExtra:false },
-  { v:'BLOB',       label:'BLOB',                    hasExtra:false },
-  { v:'MEDIUMBLOB', label:'MEDIUMBLOB',               hasExtra:false },
-  { v:'LONGBLOB',   label:'LONGBLOB',                hasExtra:false },
-  // 비트
-  { v:'BIT',        label:'BIT(n)',                  hasExtra:true,  ph:'1',      maxVal:64    },
-  // 날짜/시간
-  { v:'DATE',       label:'DATE',                    hasExtra:false },
-  { v:'TIME',       label:'TIME',                    hasExtra:false },
-  { v:'YEAR',       label:'YEAR',                    hasExtra:false },
-  { v:'DATETIME',   label:'DATETIME',                hasExtra:false },
-  { v:'TIMESTAMP',  label:'TIMESTAMP',               hasExtra:false },
-  // 기타
-  { v:'BOOLEAN',    label:'BOOLEAN / TINYINT(1)',     hasExtra:false },
-  { v:'JSON',       label:'JSON',                    hasExtra:false },
-  { v:'UUID',       label:'UUID / VARCHAR(36)',       hasExtra:false },
-  { v:'ENUM',       label:'ENUM(...)',                hasExtra:true,  ph:"'v1','v2'" },
-  { v:'SET',        label:'SET(...)',                 hasExtra:true,  ph:"'a','b'"  },
+const TYPES=[
+  {v:'TINYINT',   lb:'TINYINT',                  x:0},
+  {v:'SMALLINT',  lb:'SMALLINT',                 x:0},
+  {v:'MEDIUMINT', lb:'MEDIUMINT',                x:0},
+  {v:'INT',       lb:'INT',                      x:0},
+  {v:'BIGINT',    lb:'BIGINT',                   x:0},
+  {v:'SERIAL',    lb:'SERIAL / AUTO_INCREMENT',  x:0},
+  {v:'FLOAT',     lb:'FLOAT',                    x:0},
+  {v:'DOUBLE',    lb:'DOUBLE / REAL',             x:0},
+  {v:'DECIMAL',   lb:'DECIMAL(p,s)',              x:1, ph:'10,2',    mv:[65,30]},
+  {v:'CHAR',      lb:'CHAR(n)',                   x:1, ph:'10',      mv:255},
+  {v:'VARCHAR',   lb:'VARCHAR(n)',                x:1, ph:'255',     mv:65535},
+  {v:'TINYTEXT',  lb:'TINYTEXT',                 x:0},
+  {v:'TEXT',      lb:'TEXT',                     x:0},
+  {v:'MEDIUMTEXT',lb:'MEDIUMTEXT',               x:0},
+  {v:'LONGTEXT',  lb:'LONGTEXT',                 x:0},
+  {v:'BINARY',    lb:'BINARY(n)',                 x:1, ph:'16',      mv:255},
+  {v:'VARBINARY', lb:'VARBINARY(n)',              x:1, ph:'255',     mv:65535},
+  {v:'TINYBLOB',  lb:'TINYBLOB',                 x:0},
+  {v:'BLOB',      lb:'BLOB',                     x:0},
+  {v:'MEDIUMBLOB',lb:'MEDIUMBLOB',               x:0},
+  {v:'LONGBLOB',  lb:'LONGBLOB',                 x:0},
+  {v:'BIT',       lb:'BIT(n)',                    x:1, ph:'1',       mv:64},
+  {v:'DATE',      lb:'DATE',                     x:0},
+  {v:'TIME',      lb:'TIME',                     x:0},
+  {v:'YEAR',      lb:'YEAR',                     x:0},
+  {v:'DATETIME',  lb:'DATETIME',                 x:0},
+  {v:'TIMESTAMP', lb:'TIMESTAMP',                x:0},
+  {v:'BOOLEAN',   lb:'BOOLEAN / TINYINT(1)',      x:0},
+  {v:'JSON',      lb:'JSON',                     x:0},
+  {v:'UUID',      lb:'UUID / VARCHAR(36)',        x:0},
+  {v:'ENUM',      lb:'ENUM(...)',                 x:1, ph:"'v1','v2'"},
+  {v:'SET',       lb:'SET(...)',                  x:1, ph:"'a','b'"},
 ];
-
-const DEFAULTS = [
-  { v:'',                  label:'(없음)'           },
-  { v:'CURRENT_TIMESTAMP', label:'CURRENT_TIMESTAMP' },
-  { v:'NOW()',             label:'NOW()'             },
-  { v:'0',                 label:'0'                 },
-  { v:'1',                 label:'1'                 },
-  { v:"''",                label:"'' (빈 문자열)"  },
-  { v:'NULL',              label:'NULL'              },
-  { v:'TRUE',              label:'TRUE'              },
-  { v:'FALSE',             label:'FALSE'             },
-  { v:'__custom__',        label:'직접 입력...'      },
+const DFLTS=[
+  {v:'',lb:'(없음)'},{v:'CURRENT_TIMESTAMP',lb:'CURRENT_TIMESTAMP'},
+  {v:'NOW()',lb:'NOW()'},{v:'0',lb:'0'},{v:'1',lb:'1'},
+  {v:"''",lb:"'' (빈 문자열)"},{v:'NULL',lb:'NULL'},
+  {v:'TRUE',lb:'TRUE'},{v:'FALSE',lb:'FALSE'},{v:'__c__',lb:'직접 입력...'},
 ];
+const FKACT=['NO ACTION','RESTRICT','CASCADE','SET NULL','SET DEFAULT'];
 
-const FK_ACTIONS = ['NO ACTION','RESTRICT','CASCADE','SET NULL','SET DEFAULT'];
+let tables=[], dialect='mysql', _t=0, _c=0;
 
-let tables  = [];
-let dialect = 'mysql';
-let _tid = 0, _cid = 0;
-const newTid = () => ++_tid;
-const newCid = () => ++_cid;
+function uid(){return ++_t}
+function cid(){return ++_c}
+function newCol(){return{id:cid(),name:'',type:'VARCHAR',extra:'255',dflt:'',dc:'',pk:false,nn:false,fk:false,ft:'',fc:'',fd:'CASCADE'}}
+function td(v){return TYPES.find(t=>t.v===v)||{}}
 
-function newCol() {
-  return { id:newCid(), name:'', type:'VARCHAR', extra:'255', dflt:'', dfltCustom:'',
-           pk:false, nn:false,
-           fk:false, fkTable:'', fkCol:'', fkOnDelete:'CASCADE' };
+function addTable(){
+  tables.push({id:uid(),name:'',columns:[]});
+  redraw();
+}
+function delTable(id){
+  tables=tables.filter(t=>t.id!==id);
+  redraw();
+}
+function addCol(tid){
+  const t=tables.find(t=>t.id===tid);
+  if(t){t.columns.push(newCol());redraw();}
+}
+function delCol(tid,cid){
+  const t=tables.find(t=>t.id===tid);
+  if(t){t.columns=t.columns.filter(c=>c.id!==cid);redraw();}
 }
 
-/* ============================================================
-   VALIDATION — 크기 입력값 범위 체크
-   returns { ok, msg }
-============================================================ */
-function validateExtra(type, raw) {
-  const td = TYPES.find(x => x.v === type);
-  if (!td || !td.hasExtra || !td.maxVal) return { ok:true };
-  const mv = td.maxVal;
-
-  if (type === 'DECIMAL') {
-    // format: "p,s"
-    const parts = raw.split(',').map(s => s.trim());
-    if (parts.length !== 2) return { ok:false, msg:'p,s 형식으로 입력 (예: 10,2)' };
-    const [p, s] = parts.map(Number);
-    if (isNaN(p)||isNaN(s)) return { ok:false, msg:'숫자만 입력' };
-    if (p > mv[0]) return { ok:false, msg:`precision 최대 ${mv[0]}` };
-    if (s > mv[1]) return { ok:false, msg:`scale 최대 ${mv[1]}` };
-    if (s > p)     return { ok:false, msg:'scale ≤ precision 이어야 합니다' };
-    return { ok:true };
-  }
-
-  // 단일 숫자
-  const n = Number(raw);
-  if (!raw || isNaN(n) || n < 1) return { ok:false, msg:'1 이상의 숫자 입력' };
-  if (n > mv) return { ok:false, msg:`최대 ${mv.toLocaleString()}` };
-  return { ok:true };
+// 입력 토크단: DOM 직접 읽기
+function sync(){
+  tables.forEach(t=>{
+    const card=document.querySelector(`[data-tid="${t.id}"]`);
+    if(!card)return;
+    const ni=card.querySelector('.tblname');
+    if(ni)t.name=ni.value;
+    t.columns.forEach(col=>{
+      const row=card.querySelector(`[data-cid="${col.id}"]`);
+      if(!row)return;
+      const n=row.querySelector('.cn'); if(n)col.name=n.value;
+      const tp=row.querySelector('.ct'); if(tp)col.type=tp.value;
+      const ex=row.querySelector('.cx'); if(ex)col.extra=ex.value;
+      const df=row.querySelector('.cd'); if(df)col.dflt=df.value;
+      const dc=row.querySelector('.cdc');if(dc)col.dc=dc.value;
+      const pk=row.querySelector('.pk'); if(pk)col.pk=pk.checked;
+      const nn=row.querySelector('.nn'); if(nn)col.nn=nn.checked;
+      const fk=row.querySelector('.fk'); if(fk)col.fk=fk.checked;
+      const ft=row.querySelector('.ft'); if(ft)col.ft=ft.value;
+      const fc=row.querySelector('.fc'); if(fc)col.fc=fc.value;
+      const fd=row.querySelector('.fd'); if(fd)col.fd=fd.value;
+    });
+  });
 }
 
-/* ============================================================
-   RENDER
-============================================================ */
-function render() { renderTables(); renderSQL(); }
-
-function renderTables() {
-  const list = document.getElementById('tablesList');
-  if (tables.length === 0) {
-    list.innerHTML = '<div class="empty-msg">테이블을 추가해보세요 👆</div>';
-    return;
+function validate(type,raw){
+  const t=td(type);
+  if(!t.x||!t.mv)return{ok:true};
+  if(type==='DECIMAL'){
+    const p=raw.split(',').map(s=>s.trim());
+    if(p.length!==2)return{ok:false,msg:'p,s 형식 (예: 10,2)'};
+    const[a,b]=p.map(Number);
+    if(isNaN(a)||isNaN(b))return{ok:false,msg:'숫자만 입력'};
+    if(a>t.mv[0])return{ok:false,msg:`precision 최대 ${t.mv[0]}`};
+    if(b>t.mv[1])return{ok:false,msg:`scale 최대 ${t.mv[1]}`};
+    if(b>a)return{ok:false,msg:'scale ≤ precision'};
+    return{ok:true};
   }
-  list.innerHTML = tables.map(t => `
-    <div class="card" style="background:var(--surface2)" data-tid="${t.id}">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="3"  width="18" height="5" rx="1" fill="#6c8af7"/>
-            <rect x="3" y="10" width="18" height="5" rx="1" fill="#a78bfa" opacity=".7"/>
-            <rect x="3" y="17" width="18" height="4" rx="1" fill="#34d399" opacity=".5"/>
-          </svg>
-          <input type="text" class="tbl-name" value="${esc(t.name)}" placeholder="table_name"
-            style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;
-                   color:var(--text);font-size:1rem;font-weight:700;width:220px;outline:none;" />
-        </div>
-        <button class="btn btn-danger btn-remove-table">✕ 삭제</button>
-      </div>
-      <div class="col-grid" style="margin-bottom:4px">
-        <div class="col-hdr">콼럼 이름</div>
-        <div class="col-hdr">타입</div>
-        <div class="col-hdr">크기/값</div>
-        <div class="col-hdr">DEFAULT</div>
-        <div class="col-hdr center" title="Primary Key">PK</div>
-        <div class="col-hdr center" title="NOT NULL">NN</div>
-        <div class="col-hdr center" title="Foreign Key">FK</div>
-        <div></div>
-      </div>
-      ${t.columns.map(col => renderColRow(t, col)).join('')}
-      <div style="margin-top:12px">
-        <button class="btn btn-ghost btn-add-col" style="font-size:.82rem;padding:7px 14px">＋ 콼럼 추가</button>
-      </div>
-    </div>`).join('');
+  const n=Number(raw);
+  if(!raw||isNaN(n)||n<1)return{ok:false,msg:'1 이상 입력'};
+  if(n>t.mv)return{ok:false,msg:`최대 ${t.mv.toLocaleString()}`};
+  return{ok:true};
 }
 
-function renderColRow(t, col) {
-  const td       = TYPES.find(x => x.v === col.type) || {};
-  const hasExtra = !!td.hasExtra;
-  const isCustom = col.dflt === '__custom__';
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
-  const typeOpts = TYPES.map(x =>
-    `<option value="${x.v}"${col.type===x.v?' selected':''}>${esc(x.label)}</option>`).join('');
-  const dfltOpts = DEFAULTS.map(d =>
-    `<option value="${esc(d.v)}"${col.dflt===d.v?' selected':''}>${esc(d.label)}</option>`).join('');
-
-  // FK 참조 테이블 목록 (자기 자신 제외)
-  const otherTables = tables.filter(ot => ot.id !== t.id);
-  const fkTableOpts = [`<option value="">-- 테이블 선택 --</option>`,
-    ...otherTables.map(ot =>
-      `<option value="${ot.id}"${col.fkTable==ot.id?' selected':''}>${esc(ot.name||`table_${ot.id}`)}</option>`)
-  ].join('');
-
-  const refTable  = tables.find(ot => ot.id == col.fkTable);
-  const fkColOpts = refTable
-    ? [`<option value="">-- 콼럼 선택 --</option>`,
-       ...refTable.columns.map(rc =>
-         `<option value="${esc(rc.name)}"${col.fkCol===rc.name?' selected':''}>${esc(rc.name||`col_${rc.id}`)}</option>`)
-      ].join('')
-    : `<option value="">연참 콼럼</option>`;
-
-  const delOpts = FK_ACTIONS.map(a =>
-    `<option value="${a}"${col.fkOnDelete===a?' selected':''}>${a}</option>`).join('');
-
-  const vld = hasExtra ? validateExtra(col.type, col.extra||'') : { ok:true };
-
-  return `
-  <div class="col-grid" style="margin-top:8px" data-cid="${col.id}">
-    <div class="col-cell">
-      <input type="text" class="col-name" value="${esc(col.name)}" placeholder="column_name" />
-    </div>
-    <div class="col-cell">
-      <select class="col-type">${typeOpts}</select>
-    </div>
-    <div class="col-cell">
-      <input type="text" class="col-extra"
-        value="${esc(col.extra||'')}"
-        placeholder="${hasExtra ? esc(td.ph||'') : '\u2014'}"
-        ${hasExtra?'':'disabled'}
-        ${hasExtra && td.maxVal ? `title="열리: ${Array.isArray(td.maxVal)?'p최대'+td.maxVal[0]+', s최대'+td.maxVal[1]:열리소제목얼겪와 취라(열리: 최대 ${td.maxVal})"}` : ''}
-        ${!vld.ok ? 'class="col-extra invalid"' : 'class="col-extra"'} />
-      <span class="err-tip${!vld.ok?' show':''}">${vld.ok?'':vld.msg}</span>
-    </div>
-    <div class="col-cell" style="display:flex;gap:4px">
-      <select class="col-dflt" style="flex:1">${dfltOpts}</select>
-      <input type="text" class="col-dflt-custom" value="${esc(col.dfltCustom||'')}" placeholder="값"
-        style="width:72px;${isCustom?'':'display:none'}" />
-    </div>
-    <div class="cb-wrap"><input type="checkbox" class="col-pk" ${col.pk?'checked':''}></div>
-    <div class="cb-wrap"><input type="checkbox" class="col-nn" ${col.nn?'checked':''}></div>
-    <div class="cb-wrap"><input type="checkbox" class="col-fk" ${col.fk?'checked':''}></div>
-    <button class="btn btn-danger btn-remove-col" style="padding:4px 7px;margin-top:4px">✕</button>
-    ${col.fk ? `
-    <div style="grid-column:1/-1">
-      <div class="fk-panel">
-        <div class="fk-row">
-          <label>참조 테이블</label>
-          <select class="fk-ref-table" style="flex:1">${fkTableOpts}</select>
-        </div>
-        <div class="fk-row">
-          <label>참조 콼럼</label>
-          <select class="fk-ref-col" style="flex:1">${fkColOpts}</select>
-        </div>
-        <div class="fk-row">
-          <label>ON DELETE</label>
-          <select class="fk-on-delete" style="flex:1">${delOpts}</select>
-        </div>
-      </div>
-    </div>` : ''}
-  </div>`;
+function selOpts(arr,valFn,lbFn,cur){
+  return arr.map(x=>`<option value="${esc(valFn(x))}"${cur===valFn(x)?' selected':''}>${esc(lbFn(x))}</option>`).join('');
 }
 
-/* ============================================================
-   EVENT DELEGATION
-============================================================ */
-document.getElementById('btnAddTable').addEventListener('click', () => {
-  tables.push({ id:newTid(), name:'', columns:[] });
-  render();
-});
-document.getElementById('dbName').addEventListener('input', renderSQL);
+function redraw(){
+  const list=document.getElementById('tlist');
+  if(!tables.length){list.innerHTML='<div class="empty">테이블을 추가해보세요 👆</div>';renderSQL();return;}
 
-document.getElementById('tablesList').addEventListener('click', e => {
-  const card = e.target.closest('[data-tid]');
-  if (!card) return;
-  const tid = +card.dataset.tid;
-  if (e.target.closest('.btn-remove-table')) { tables = tables.filter(t => t.id !== tid); render(); return; }
-  if (e.target.closest('.btn-add-col'))      { const t = tables.find(t=>t.id===tid); if(t){t.columns.push(newCol());render();} return; }
-  const colRow = e.target.closest('[data-cid]');
-  if (colRow && e.target.closest('.btn-remove-col')) {
-    const t = tables.find(t=>t.id===tid);
-    if(t){ t.columns = t.columns.filter(c=>c.id !== +colRow.dataset.cid); render(); }
-  }
-});
+  list.innerHTML=tables.map(t=>{
+    const colRows=t.columns.map(col=>{
+      const tp=td(col.type);
+      const hasX=!!tp.x;
+      const isC=col.dflt==='__c__';
+      const vld=hasX?validate(col.type,col.extra||''):{ok:true};
 
-document.getElementById('tablesList').addEventListener('change', e => {
-  const card = e.target.closest('[data-tid]');
-  if (!card) return;
-  const t = tables.find(t=>t.id === +card.dataset.tid);
-  if (!t) return;
+      const otherT=tables.filter(o=>o.id!==t.id);
+      const refT=tables.find(o=>String(o.id)===String(col.ft));
 
-  const colRow = e.target.closest('[data-cid]');
+      return `<div class="cg" data-cid="${col.id}">
+  <div><input type="text" class="cn" value="${esc(col.name)}" placeholder="column_name" oninput="onInput()"></div>
+  <div><select class="ct" onchange="onTypeChange(${t.id},${col.id},this.value)">${selOpts(TYPES,x=>x.v,x=>x.lb,col.type)}</select></div>
+  <div>
+    <input type="text" class="cx${!vld.ok?' bad':''}" value="${esc(col.extra||'')}" placeholder="${hasX?esc(tp.ph||''):'\u2014'}" ${hasX?'':'disabled'} oninput="onExtraInput(${t.id},${col.id},this)">
+    <div class="errtip">${vld.ok?'':esc(vld.msg)}</div>
+  </div>
+  <div style="display:flex;gap:4px">
+    <select class="cd" style="flex:1" onchange="onInput()">${selOpts(DFLTS,x=>x.v,x=>x.lb,col.dflt)}</select>
+    <input type="text" class="cdc" value="${esc(col.dc||'')}" placeholder="값" style="width:72px;${isC?'':'display:none'}" oninput="onInput()">
+  </div>
+  <div class="cbw"><input type="checkbox" class="pk" ${col.pk?'checked':''} onchange="onInput()"></div>
+  <div class="cbw"><input type="checkbox" class="nn" ${col.nn?'checked':''} onchange="onInput()"></div>
+  <div class="cbw"><input type="checkbox" class="fk" ${col.fk?'checked':''} onchange="onFKToggle(${t.id},${col.id},this.checked)"></div>
+  <button class="btn bd2" style="margin-top:8px;padding:4px 7px" onclick="delCol(${t.id},${col.id})">✕</button>
+  ${col.fk?`<div class="fkpanel">
+    <div class="fkrow"><label>참조 테이블</label>
+      <select class="ft" style="flex:1" onchange="onFKTable(${t.id},${col.id},this.value)">
+        <option value="">-- 테이블 선택 --</option>
+        ${otherT.map(o=>`<option value="${o.id}"${String(col.ft)===String(o.id)?' selected':''}>${esc(o.name||'table_'+o.id)}</option>`).join('')}
+      </select></div>
+    <div class="fkrow"><label>참조 콼럼</label>
+      <select class="fc" style="flex:1" onchange="onInput()">
+        <option value="">-- 콼럼 선택 --</option>
+        ${refT?refT.columns.map(rc=>`<option value="${esc(rc.name)}"${col.fc===rc.name?' selected':''}>${esc(rc.name||'col_'+rc.id)}</option>`).join(''):''}
+      </select></div>
+    <div class="fkrow"><label>ON DELETE</label>
+      <select class="fd" style="flex:1" onchange="onInput()">${FKACT.map(a=>`<option value="${a}"${col.fd===a?' selected':''}>${a}</option>`).join('')}</select></div>
+  </div>`:''}
+</div>`;
+    }).join('');
 
-  // FK checkbox — re-render whole table card
-  if (colRow && e.target.classList.contains('col-fk')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (col) { col.fk = e.target.checked; render(); return; }
-  }
-  if (colRow && e.target.classList.contains('col-pk')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (col) { col.pk = e.target.checked; renderSQL(); return; }
-  }
-  if (colRow && e.target.classList.contains('col-nn')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (col) { col.nn = e.target.checked; renderSQL(); return; }
-  }
-  if (colRow && e.target.classList.contains('col-type')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (!col) return;
-    col.type = e.target.value;
-    const td = TYPES.find(x=>x.v===col.type);
-    col.extra = td?.hasExtra ? (td.ph||'') : '';
-    // DOM 직접 업데이트 (리렌더 없이)
-    const extraEl  = colRow.querySelector('.col-extra');
-    const errEl    = colRow.querySelector('.err-tip');
-    extraEl.value       = col.extra;
-    extraEl.disabled    = !td?.hasExtra;
-    extraEl.placeholder = td?.hasExtra ? (td.ph||'') : '\u2014';
-    extraEl.classList.remove('invalid'); errEl.classList.remove('show'); errEl.textContent='';
-    renderSQL(); return;
-  }
-  if (colRow && e.target.classList.contains('col-dflt')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (!col) return;
-    col.dflt = e.target.value;
-    const customEl = colRow.querySelector('.col-dflt-custom');
-    customEl.style.display = col.dflt==='__custom__' ? '' : 'none';
-    renderSQL(); return;
-  }
-  if (colRow && e.target.classList.contains('fk-ref-table')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (!col) return;
-    col.fkTable = e.target.value; col.fkCol = '';
-    render(); return;
-  }
-  if (colRow && e.target.classList.contains('fk-ref-col')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (col) { col.fkCol = e.target.value; renderSQL(); }
-    return;
-  }
-  if (colRow && e.target.classList.contains('fk-on-delete')) {
-    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-    if (col) { col.fkOnDelete = e.target.value; renderSQL(); }
-  }
-});
-
-document.getElementById('tablesList').addEventListener('input', e => {
-  const card = e.target.closest('[data-tid]');
-  if (!card) return;
-  const t = tables.find(t=>t.id === +card.dataset.tid);
-  if (!t) return;
-
-  if (e.target.classList.contains('tbl-name')) { t.name = e.target.value; renderSQL(); return; }
-
-  const colRow = e.target.closest('[data-cid]');
-  if (!colRow) return;
-  const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
-  if (!col) return;
-
-  if (e.target.classList.contains('col-name'))         { col.name = e.target.value; }
-  else if (e.target.classList.contains('col-dflt-custom')) { col.dfltCustom = e.target.value; }
-  else if (e.target.classList.contains('col-extra')) {
-    col.extra = e.target.value;
-    const vld = validateExtra(col.type, col.extra);
-    const errEl = colRow.querySelector('.err-tip');
-    e.target.classList.toggle('invalid', !vld.ok);
-    errEl.classList.toggle('show', !vld.ok);
-    errEl.textContent = vld.ok ? '' : vld.msg;
-  }
+    return `<div class="card" style="background:var(--s2)" data-tid="${t.id}">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="5" rx="1" fill="#6c8af7"/><rect x="3" y="10" width="18" height="5" rx="1" fill="#a78bfa" opacity=".7"/><rect x="3" y="17" width="18" height="4" rx="1" fill="#34d399" opacity=".5"/></svg>
+      <input type="text" class="tblname" value="${esc(t.name)}" placeholder="table_name"
+        style="background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--tx);font-size:1rem;font-weight:700;width:220px;outline:none"
+        oninput="onInput()">
+    </div>
+    <button class="btn bd2" onclick="delTable(${t.id})">✕ 삭제</button>
+  </div>
+  <div class="cg" style="margin-bottom:4px">
+    <div class="ch">콼럼 이름</div><div class="ch">타입</div><div class="ch">크기/값</div>
+    <div class="ch">DEFAULT</div>
+    <div class="ch cc" title="Primary Key">PK</div>
+    <div class="ch cc" title="NOT NULL">NN</div>
+    <div class="ch cc" title="Foreign Key">FK</div>
+    <div></div>
+  </div>
+  ${colRows}
+  <div style="margin-top:12px">
+    <button class="btn bg" style="font-size:.82rem;padding:7px 14px" onclick="addCol(${t.id})">＋ 콼럼 추가</button>
+  </div>
+</div>`;
+  }).join('');
 
   renderSQL();
-});
+}
 
-document.querySelectorAll('.tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    dialect = btn.dataset.tab;
-    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b===btn));
-    renderSQL();
+function onInput(){sync();renderSQL();}
+
+function onTypeChange(tid,cid,val){
+  sync();
+  const t=tables.find(t=>t.id===tid);
+  if(!t)return;
+  const col=t.columns.find(c=>c.id===cid);
+  if(!col)return;
+  col.type=val;
+  const tp=td(val);
+  col.extra=tp.x?(tp.ph||''):'';
+  redraw();
+}
+
+function onExtraInput(tid,cid,el){
+  sync();
+  const t=tables.find(t=>t.id===tid);
+  if(!t)return;
+  const col=t.columns.find(c=>c.id===cid);
+  if(!col)return;
+  col.extra=el.value;
+  const vld=validate(col.type,col.extra);
+  el.classList.toggle('bad',!vld.ok);
+  const err=el.closest('[data-cid]').querySelector('.errtip');
+  if(err)err.textContent=vld.ok?'':vld.msg;
+  renderSQL();
+}
+
+function onFKToggle(tid,cid,on){
+  sync();
+  const t=tables.find(t=>t.id===tid);
+  if(!t)return;
+  const col=t.columns.find(c=>c.id===cid);
+  if(!col)return;
+  col.fk=on;
+  redraw();
+}
+
+function onFKTable(tid,cid,val){
+  sync();
+  const t=tables.find(t=>t.id===tid);
+  if(!t)return;
+  const col=t.columns.find(c=>c.id===cid);
+  if(!col)return;
+  col.ft=val; col.fc='';
+  redraw();
+}
+
+function switchTab(tab){
+  dialect=tab;
+  document.getElementById('tab-mysql').classList.toggle('on',tab==='mysql');
+  document.getElementById('tab-pg').classList.toggle('on',tab==='pg');
+  renderSQL();
+}
+
+function copySQL(){
+  const sql=buildSQL();
+  if(!sql)return;
+  navigator.clipboard.writeText(sql).then(()=>{
+    const b=document.getElementById('copybtn');
+    b.textContent='✅ 복사됨'; b.classList.add('ok');
+    setTimeout(()=>{b.textContent='📋 복사';b.classList.remove('ok');},1800);
   });
-});
+}
 
-document.getElementById('btnCopy').addEventListener('click', () => {
-  const sql = buildSQL(dialect);
-  if (!sql) return;
-  navigator.clipboard.writeText(sql).then(() => {
-    const b = document.getElementById('btnCopy');
-    b.textContent = '✅ 복사됨'; b.classList.add('copied');
-    setTimeout(()=>{ b.textContent='📋 복사'; b.classList.remove('copied'); }, 1800);
-  });
-});
-
-/* ============================================================
-   SQL GENERATION
-============================================================ */
-function resolveType(col, dl) {
-  const tp = col.type, ex = (col.extra||'').trim();
-  if (dl === 'mysql') {
-    if (tp==='SERIAL')     return 'INT AUTO_INCREMENT';
-    if (tp==='BOOLEAN')    return 'TINYINT(1)';
-    if (tp==='UUID')       return 'VARCHAR(36)';
-    if (tp==='DOUBLE')     return 'DOUBLE';
-    if (tp==='MEDIUMINT')  return 'MEDIUMINT';
-    if (tp==='TINYTEXT')   return 'TINYTEXT';
-    if (tp==='MEDIUMTEXT') return 'MEDIUMTEXT';
-    if (tp==='LONGTEXT')   return 'LONGTEXT';
-    if (tp==='TINYBLOB')   return 'TINYBLOB';
-    if (tp==='MEDIUMBLOB') return 'MEDIUMBLOB';
-    if (tp==='LONGBLOB')   return 'LONGBLOB';
-    if (tp==='YEAR')       return 'YEAR';
-    if ((tp==='VARCHAR'||tp==='CHAR'||tp==='BINARY'||tp==='VARBINARY'||tp==='BIT') && ex) return `${tp}(${ex})`;
-    if (tp==='DECIMAL' && ex) return `DECIMAL(${ex})`;
-    if (tp==='ENUM'    && ex) return `ENUM(${ex})`;
-    if (tp==='SET'     && ex) return `SET(${ex})`;
+/* SQL 생성 */
+function rtype(col,dl){
+  const tp=col.type,ex=(col.extra||'').trim();
+  if(dl==='mysql'){
+    if(tp==='SERIAL')return 'INT AUTO_INCREMENT';
+    if(tp==='BOOLEAN')return 'TINYINT(1)';
+    if(tp==='UUID')return 'VARCHAR(36)';
+    if(tp==='DOUBLE')return 'DOUBLE';
+    if(['VARCHAR','CHAR','BINARY','VARBINARY','BIT'].includes(tp)&&ex)return `${tp}(${ex})`;
+    if(tp==='DECIMAL'&&ex)return `DECIMAL(${ex})`;
+    if(tp==='ENUM'&&ex)return `ENUM(${ex})`;
+    if(tp==='SET'&&ex)return `SET(${ex})`;
     return tp;
-  } else {
-    if (tp==='SERIAL')     return 'SERIAL';
-    if (tp==='BOOLEAN')    return 'BOOLEAN';
-    if (tp==='UUID')       return 'UUID';
-    if (tp==='DATETIME')   return 'TIMESTAMP';
-    if (tp==='LONGTEXT'||tp==='MEDIUMTEXT'||tp==='TINYTEXT') return 'TEXT';
-    if (tp==='TINYINT')    return 'SMALLINT';
-    if (tp==='MEDIUMINT')  return 'INTEGER';
-    if (tp==='DOUBLE')     return 'DOUBLE PRECISION';
-    if (tp==='BLOB'||tp==='TINYBLOB'||tp==='MEDIUMBLOB'||tp==='LONGBLOB') return 'BYTEA';
-    if (tp==='YEAR')       return 'SMALLINT';
-    if (tp==='SET' && ex)  return `TEXT CHECK (${col.name||'col'} IN (${ex}))`;
-    if (tp==='ENUM' && ex) return `VARCHAR(100) CHECK (${col.name||'col'} IN (${ex}))`;
-    if ((tp==='VARCHAR'||tp==='CHAR') && ex) return `${tp}(${ex})`;
-    if ((tp==='BINARY'||tp==='VARBINARY') && ex) return `BYTEA`;
-    if (tp==='BIT' && ex)  return `BIT(${ex})`;
-    if (tp==='DECIMAL' && ex) return `NUMERIC(${ex})`;
+  }else{
+    if(tp==='SERIAL')return 'SERIAL';
+    if(tp==='BOOLEAN')return 'BOOLEAN';
+    if(tp==='UUID')return 'UUID';
+    if(tp==='DATETIME')return 'TIMESTAMP';
+    if(['LONGTEXT','MEDIUMTEXT','TINYTEXT'].includes(tp))return 'TEXT';
+    if(tp==='TINYINT')return 'SMALLINT';
+    if(tp==='MEDIUMINT')return 'INTEGER';
+    if(tp==='DOUBLE')return 'DOUBLE PRECISION';
+    if(['BLOB','TINYBLOB','MEDIUMBLOB','LONGBLOB','BINARY','VARBINARY'].includes(tp))return 'BYTEA';
+    if(tp==='YEAR')return 'SMALLINT';
+    if(tp==='ENUM'&&ex)return `VARCHAR(100) CHECK (${col.name||'col'} IN (${ex}))`;
+    if(tp==='SET'&&ex)return `TEXT CHECK (${col.name||'col'} IN (${ex}))`;
+    if(['VARCHAR','CHAR'].includes(tp)&&ex)return `${tp}(${ex})`;
+    if(tp==='DECIMAL'&&ex)return `NUMERIC(${ex})`;
+    if(tp==='BIT'&&ex)return `BIT(${ex})`;
     return tp;
   }
 }
 
-function getDflt(col) {
-  if (!col.dflt) return '';
-  if (col.dflt==='__custom__') return col.dfltCustom||'';
-  return col.dflt;
-}
-
-function buildSQL(dl) {
-  const dbName = document.getElementById('dbName').value.trim();
-  const valid  = tables.filter(t => t.columns.length > 0);
-  if (!valid.length) return '';
-
-  const lines = [];
-  if (dbName) { lines.push(dl==='mysql' ? `USE ${dbName};` : `\\c ${dbName}`); lines.push(''); }
-
-  valid.forEach((t, ti) => {
-    const tName = t.name || `table_${ti+1}`;
-    lines.push(`CREATE TABLE ${tName} (`);
-
-    const defs = t.columns.map((col, ci) => {
-      const name = col.name || `col_${ci+1}`;
-      let line = `    ${name} ${resolveType(col, dl)}`;
-      if (col.nn)         line += ' NOT NULL';
-      const d = getDflt(col);
-      if (d)              line += ` DEFAULT ${d}`;
-      if (col.pk)         line += ' PRIMARY KEY';
-      return line;
+function buildSQL(){
+  sync();
+  const db=document.getElementById('dbName').value.trim();
+  const vt=tables.filter(t=>t.columns.length>0);
+  if(!vt.length)return '';
+  const lines=[];
+  if(db){
+    lines.push(dialect==='mysql'?`USE ${db};`:`\\c ${db}`);
+    lines.push('');
+  }
+  vt.forEach((t,ti)=>{
+    const tn=t.name||`table_${ti+1}`;
+    lines.push(`CREATE TABLE ${tn} (`);
+    const defs=t.columns.map((col,ci)=>{
+      const nm=col.name||`col_${ci+1}`;
+      let l=`    ${nm} ${rtype(col,dialect)}`;
+      if(col.nn)l+=' NOT NULL';
+      const d=col.dflt==='__c__'?col.dc:col.dflt;
+      if(d)l+=` DEFAULT ${d}`;
+      if(col.pk)l+=' PRIMARY KEY';
+      return l;
     });
-
-    // FK constraints
-    const fkDefs = t.columns
-      .filter(col => col.fk && col.fkTable && col.fkCol)
-      .map(col => {
-        const refT = tables.find(ot=>ot.id==col.fkTable);
-        const refName = refT ? (refT.name||`table_${refT.id}`) : col.fkTable;
-        const colName = col.name || `col_${col.id}`;
-        return `    FOREIGN KEY (${colName}) REFERENCES ${refName} (${col.fkCol}) ON DELETE ${col.fkOnDelete}`;
+    const fks=t.columns
+      .filter(c=>c.fk&&c.ft&&c.fc)
+      .map(c=>{
+        const rt=tables.find(o=>String(o.id)===String(c.ft));
+        const rn=rt?(rt.name||`table_${rt.id}`):c.ft;
+        return `    FOREIGN KEY (${c.name||`col_${c.id}`}) REFERENCES ${rn} (${c.fc}) ON DELETE ${c.fd}`;
       });
-
-    const all = [...defs, ...fkDefs];
-    lines.push(all.map((l,i) => i<all.length-1 ? l+',' : l).join('\n'));
+    const all=[...defs,...fks];
+    lines.push(all.map((l,i)=>i<all.length-1?l+',':l).join('\n'));
     lines.push(');');
-    if (ti < valid.length-1) lines.push('');
+    if(ti<vt.length-1)lines.push('');
   });
-
   return lines.join('\n');
 }
 
-function renderSQL() {
-  const sql = buildSQL(dialect);
-  const pre = document.getElementById('sqlOut');
-  if (!sql) { pre.innerHTML='<span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span>'; return; }
-  pre.innerHTML = highlight(sql);
+function renderSQL(){
+  const sql=buildSQL();
+  const pre=document.getElementById('sqlout');
+  if(!sql){pre.innerHTML='<span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span>';return;}
+  pre.innerHTML=hl(sql);
 }
 
-/* ============================================================
-   SYNTAX HIGHLIGHT
-============================================================ */
-const KW = ['CREATE','TABLE','USE','PRIMARY','KEY','NOT','NULL','DEFAULT',
-  'AUTO_INCREMENT','SERIAL','UNIQUE','CHECK','IN','REFERENCES','FOREIGN',
-  'ON','DELETE','CASCADE','RESTRICT','SET','NO','ACTION','CONSTRAINT'];
-const TY_LIST = [
+const KWS=['CREATE','TABLE','USE','PRIMARY','KEY','NOT','NULL','DEFAULT','AUTO_INCREMENT',
+  'SERIAL','UNIQUE','CHECK','IN','REFERENCES','FOREIGN','ON','DELETE','CASCADE',
+  'RESTRICT','SET','NO','ACTION','CONSTRAINT'];
+const TYS=[
   'DOUBLE PRECISION','AUTO_INCREMENT',
   'TINYINT','SMALLINT','MEDIUMINT','INT','BIGINT','FLOAT','DOUBLE','DECIMAL','NUMERIC',
-  'TINYTEXT','TEXT','MEDIUMTEXT','LONGTEXT',
-  'TINYBLOB','BLOB','MEDIUMBLOB','LONGBLOB',
+  'TINYTEXT','TEXT','MEDIUMTEXT','LONGTEXT','TINYBLOB','BLOB','MEDIUMBLOB','LONGBLOB',
   'BINARY','VARBINARY','VARCHAR','CHAR','BIT',
   'BOOLEAN','DATE','DATETIME','TIMESTAMP','TIME','YEAR',
   'JSON','UUID','BYTEA','ENUM','SET','SERIAL',
 ];
-
-function highlight(sql) {
-  let h = sql.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  h = h.replace(/('(?:[^'\\]|\\.)*')/g, '<span class="st">$1</span>');
-  h = h.replace(/(--[^\n]*)/g, '<span class="cm">$1</span>');
-  TY_LIST.slice().sort((a,b)=>b.length-a.length).forEach(tp => {
-    h = h.replace(new RegExp(`(?<![\\w>])(${tp})(?![\\w<])`, 'g'), '<span class="ty">$1</span>');
+function hl(sql){
+  let h=sql.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  h=h.replace(/('(?:[^'\\]|\\.)*')/g,'<span class="st">$1</span>');
+  h=h.replace(/(--[^\n]*)/g,'<span class="cm">$1</span>');
+  TYS.slice().sort((a,b)=>b.length-a.length).forEach(t=>{
+    h=h.replace(new RegExp(`(?<![\\w>])(${t})(?![\\w<])`,'g'),'<span class="ty">$1</span>');
   });
-  KW.forEach(kw => {
-    h = h.replace(new RegExp(`(?<![\\w>])(${kw})(?![\\w<])`, 'g'), '<span class="kw">$1</span>');
+  KWS.forEach(k=>{
+    h=h.replace(new RegExp(`(?<![\\w>])(${k})(?![\\w<])`,'g'),'<span class="kw">$1</span>');
   });
   return h;
-}
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 renderSQL();

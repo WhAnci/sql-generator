@@ -12,6 +12,7 @@
       --border: #2e3350;
       --accent: #6c8af7;
       --danger: #f87171;
+      --warn: #fbbf24;
       --success: #34d399;
       --text: #e2e8f0;
       --muted: #8892b0;
@@ -22,16 +23,19 @@
     header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
     header h1 { font-size: 1.4rem; font-weight: 700; }
     header .badge { font-size: 0.75rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 24px; }
+    .wrap { max-width: 1300px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 24px; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
     .field-label { font-size: 0.78rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
-    input[type=text], select {
+    input[type=text], input[type=number], select {
       background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
       padding: 9px 11px; color: var(--text); font-size: 0.9rem; outline: none;
       transition: border-color 0.2s; width: 100%;
     }
-    input[type=text]:focus, select:focus { border-color: var(--accent); }
-    input:disabled { opacity: 0.25; cursor: not-allowed; }
+    input[type=text]:focus, input[type=number]:focus, select:focus { border-color: var(--accent); }
+    input:disabled, select:disabled { opacity: 0.25; cursor: not-allowed; }
+    input.invalid { border-color: var(--danger) !important; }
+    .err-tip { font-size: 0.72rem; color: var(--danger); margin-top: 2px; display: none; }
+    .err-tip.show { display: block; }
     .btn { border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: opacity .15s, transform .1s; }
     .btn:hover { opacity: .85; transform: translateY(-1px); }
     .btn-primary { background: var(--accent); color: #fff; }
@@ -39,11 +43,11 @@
     .btn-danger  { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; font-size: 0.8rem; }
     .btn-copy    { background: var(--surface2); border: 1px solid var(--border); color: var(--accent); padding: 6px 14px; font-size: 0.82rem; }
     .btn-copy.copied { background: var(--success); color: #0f1117; border-color: var(--success); }
-    /* 7-col grid: name | type | size | default | PK | NN | del */
-    .col-grid { display: grid; grid-template-columns: 1.6fr 1.5fr 0.85fr 1.3fr 2.6rem 2.6rem 2rem; gap: 7px; align-items: center; }
+    /* 9-col grid: name | type | size | default | PK | NN | FK | del */
+    .col-grid { display: grid; grid-template-columns: 1.5fr 1.6fr 0.8fr 1.2fr 2.6rem 2.6rem 2.6rem 2rem; gap: 7px; align-items: start; }
     .col-hdr { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
     .col-hdr.center { text-align: center; }
-    .cb-wrap { display: flex; justify-content: center; }
+    .cb-wrap { display: flex; justify-content: center; padding-top: 10px; }
     input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
     .tables-list { display: flex; flex-direction: column; gap: 20px; }
     .empty-msg { text-align: center; padding: 36px; color: var(--muted); }
@@ -53,11 +57,16 @@
     .out-wrap { position: relative; margin-top: 14px; }
     pre { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 70px 20px 20px; font-size: 0.9rem; line-height: 1.9; overflow-x: auto; white-space: pre; color: #a9c5e8; min-height: 100px; font-family: 'Fira Code','Cascadia Code','Consolas',monospace; }
     .out-actions { position: absolute; top: 10px; right: 12px; }
-    /* syntax */
     .kw { color: #c792ea; font-weight: 700; }
     .ty { color: #f78c6c; }
     .cm { color: #546e7a; font-style: italic; }
     .st { color: #c3e88d; }
+    /* FK panel */
+    .fk-panel { margin-top: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; }
+    .fk-panel select { font-size: 0.84rem; padding: 6px 8px; }
+    .fk-row { display: flex; gap: 6px; align-items: center; }
+    .fk-row label { font-size: 0.75rem; color: var(--muted); white-space: nowrap; min-width: 60px; }
+    .col-cell { display: flex; flex-direction: column; }
   </style>
 </head>
 <body>
@@ -72,13 +81,11 @@
 </header>
 
 <div class="wrap">
-  <!-- DB Name -->
   <div class="card">
     <span class="field-label">데이터베이스 이름</span>
     <input type="text" id="dbName" placeholder="my_database" style="max-width:360px" />
   </div>
 
-  <!-- Tables -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <span style="font-size:1.05rem;font-weight:700">테이블 목록</span>
@@ -89,7 +96,6 @@
     </div>
   </div>
 
-  <!-- Output -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:1.05rem;font-weight:700">생성된 SQL</span>
@@ -108,33 +114,52 @@
 </div>
 
 <script>
-/* ====================================================
-   DATA MODEL
-   tables = [{ id, name, columns: [{ id, name, type, extra, dflt, dfltCustom, pk, nn }] }]
-==================================================== */
+/* ============================================================
+   TYPES  — hasExtra: 크기/값 입력 필요
+            maxVal: 최대값 (단일 숫자) or [maxP, maxS] (DECIMAL)
+============================================================ */
 const TYPES = [
-  { v:'INT',       label:'INT',                    hasExtra:false },
-  { v:'BIGINT',    label:'BIGINT',                 hasExtra:false },
-  { v:'SMALLINT',  label:'SMALLINT',               hasExtra:false },
-  { v:'TINYINT',   label:'TINYINT',                hasExtra:false },
-  { v:'FLOAT',     label:'FLOAT',                  hasExtra:false },
-  { v:'DOUBLE',    label:'DOUBLE',                 hasExtra:false },
-  { v:'DECIMAL',   label:'DECIMAL(p,s)',            hasExtra:true,  ph:'18,2'         },
-  { v:'VARCHAR',   label:'VARCHAR(n)',              hasExtra:true,  ph:'255'          },
-  { v:'CHAR',      label:'CHAR(n)',                 hasExtra:true,  ph:'10'           },
-  { v:'TEXT',      label:'TEXT',                   hasExtra:false },
-  { v:'LONGTEXT',  label:'LONGTEXT',               hasExtra:false },
-  { v:'BOOLEAN',   label:'BOOLEAN',                hasExtra:false },
-  { v:'DATE',      label:'DATE',                   hasExtra:false },
-  { v:'TIMESTAMP', label:'TIMESTAMP',              hasExtra:false },
-  { v:'DATETIME',  label:'DATETIME',               hasExtra:false },
-  { v:'TIME',      label:'TIME',                   hasExtra:false },
-  { v:'JSON',      label:'JSON',                   hasExtra:false },
-  { v:'BLOB',      label:'BLOB',                   hasExtra:false },
-  { v:'UUID',      label:'UUID / CHAR(36)',         hasExtra:false },
-  { v:'ENUM',      label:'ENUM(...)',               hasExtra:true,  ph:"'val1','val2'" },
-  { v:'SERIAL',    label:'SERIAL / AUTO_INCREMENT', hasExtra:false },
+  // 정수
+  { v:'TINYINT',    label:'TINYINT',                 hasExtra:false },
+  { v:'SMALLINT',   label:'SMALLINT',                hasExtra:false },
+  { v:'MEDIUMINT',  label:'MEDIUMINT',               hasExtra:false },
+  { v:'INT',        label:'INT',                     hasExtra:false },
+  { v:'BIGINT',     label:'BIGINT',                  hasExtra:false },
+  { v:'SERIAL',     label:'SERIAL / AUTO_INCREMENT',  hasExtra:false },
+  // 실수
+  { v:'FLOAT',      label:'FLOAT',                   hasExtra:false },
+  { v:'DOUBLE',     label:'DOUBLE / REAL',            hasExtra:false },
+  { v:'DECIMAL',    label:'DECIMAL(p,s)',             hasExtra:true,  ph:'10,2',   maxVal:[65,30] },
+  // 문자
+  { v:'CHAR',       label:'CHAR(n)',                  hasExtra:true,  ph:'10',     maxVal:255   },
+  { v:'VARCHAR',    label:'VARCHAR(n)',               hasExtra:true,  ph:'255',    maxVal:65535 },
+  { v:'TINYTEXT',   label:'TINYTEXT',                hasExtra:false },
+  { v:'TEXT',       label:'TEXT',                    hasExtra:false },
+  { v:'MEDIUMTEXT', label:'MEDIUMTEXT',               hasExtra:false },
+  { v:'LONGTEXT',   label:'LONGTEXT',                hasExtra:false },
+  // 이진
+  { v:'BINARY',     label:'BINARY(n)',               hasExtra:true,  ph:'16',     maxVal:255   },
+  { v:'VARBINARY',  label:'VARBINARY(n)',             hasExtra:true,  ph:'255',    maxVal:65535 },
+  { v:'TINYBLOB',   label:'TINYBLOB',                hasExtra:false },
+  { v:'BLOB',       label:'BLOB',                    hasExtra:false },
+  { v:'MEDIUMBLOB', label:'MEDIUMBLOB',               hasExtra:false },
+  { v:'LONGBLOB',   label:'LONGBLOB',                hasExtra:false },
+  // 비트
+  { v:'BIT',        label:'BIT(n)',                  hasExtra:true,  ph:'1',      maxVal:64    },
+  // 날짜/시간
+  { v:'DATE',       label:'DATE',                    hasExtra:false },
+  { v:'TIME',       label:'TIME',                    hasExtra:false },
+  { v:'YEAR',       label:'YEAR',                    hasExtra:false },
+  { v:'DATETIME',   label:'DATETIME',                hasExtra:false },
+  { v:'TIMESTAMP',  label:'TIMESTAMP',               hasExtra:false },
+  // 기타
+  { v:'BOOLEAN',    label:'BOOLEAN / TINYINT(1)',     hasExtra:false },
+  { v:'JSON',       label:'JSON',                    hasExtra:false },
+  { v:'UUID',       label:'UUID / VARCHAR(36)',       hasExtra:false },
+  { v:'ENUM',       label:'ENUM(...)',                hasExtra:true,  ph:"'v1','v2'" },
+  { v:'SET',        label:'SET(...)',                 hasExtra:true,  ph:"'a','b'"  },
 ];
+
 const DEFAULTS = [
   { v:'',                  label:'(없음)'           },
   { v:'CURRENT_TIMESTAMP', label:'CURRENT_TIMESTAMP' },
@@ -148,35 +173,61 @@ const DEFAULTS = [
   { v:'__custom__',        label:'직접 입력...'      },
 ];
 
+const FK_ACTIONS = ['NO ACTION','RESTRICT','CASCADE','SET NULL','SET DEFAULT'];
+
 let tables  = [];
 let dialect = 'mysql';
 let _tid = 0, _cid = 0;
-newTid = () => ++_tid;
-newCid = () => ++_cid;
+const newTid = () => ++_tid;
+const newCid = () => ++_cid;
 
 function newCol() {
-  return { id: newCid(), name:'', type:'VARCHAR', extra:'255', dflt:'', dfltCustom:'', pk:false, nn:false };
+  return { id:newCid(), name:'', type:'VARCHAR', extra:'255', dflt:'', dfltCustom:'',
+           pk:false, nn:false,
+           fk:false, fkTable:'', fkCol:'', fkOnDelete:'CASCADE' };
 }
 
-/* ====================================================
-   RENDER
-==================================================== */
-function render() {
-  renderTables();
-  renderSQL();
+/* ============================================================
+   VALIDATION — 크기 입력값 범위 체크
+   returns { ok, msg }
+============================================================ */
+function validateExtra(type, raw) {
+  const td = TYPES.find(x => x.v === type);
+  if (!td || !td.hasExtra || !td.maxVal) return { ok:true };
+  const mv = td.maxVal;
+
+  if (type === 'DECIMAL') {
+    // format: "p,s"
+    const parts = raw.split(',').map(s => s.trim());
+    if (parts.length !== 2) return { ok:false, msg:'p,s 형식으로 입력 (예: 10,2)' };
+    const [p, s] = parts.map(Number);
+    if (isNaN(p)||isNaN(s)) return { ok:false, msg:'숫자만 입력' };
+    if (p > mv[0]) return { ok:false, msg:`precision 최대 ${mv[0]}` };
+    if (s > mv[1]) return { ok:false, msg:`scale 최대 ${mv[1]}` };
+    if (s > p)     return { ok:false, msg:'scale ≤ precision 이어야 합니다' };
+    return { ok:true };
+  }
+
+  // 단일 숫자
+  const n = Number(raw);
+  if (!raw || isNaN(n) || n < 1) return { ok:false, msg:'1 이상의 숫자 입력' };
+  if (n > mv) return { ok:false, msg:`최대 ${mv.toLocaleString()}` };
+  return { ok:true };
 }
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render() { renderTables(); renderSQL(); }
 
 function renderTables() {
   const list = document.getElementById('tablesList');
-
   if (tables.length === 0) {
     list.innerHTML = '<div class="empty-msg">테이블을 추가해보세요 👆</div>';
     return;
   }
-
   list.innerHTML = tables.map(t => `
     <div class="card" style="background:var(--surface2)" data-tid="${t.id}">
-      <!-- table header -->
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:8px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
@@ -184,202 +235,272 @@ function renderTables() {
             <rect x="3" y="10" width="18" height="5" rx="1" fill="#a78bfa" opacity=".7"/>
             <rect x="3" y="17" width="18" height="4" rx="1" fill="#34d399" opacity=".5"/>
           </svg>
-          <input type="text" class="tbl-name"
-            value="${esc(t.name)}" placeholder="table_name"
-            style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:1rem;font-weight:700;width:220px;outline:none;" />
+          <input type="text" class="tbl-name" value="${esc(t.name)}" placeholder="table_name"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;
+                   color:var(--text);font-size:1rem;font-weight:700;width:220px;outline:none;" />
         </div>
         <button class="btn btn-danger btn-remove-table">✕ 삭제</button>
       </div>
-
-      <!-- column headers -->
       <div class="col-grid" style="margin-bottom:4px">
-        <div class="col-hdr">컬럼 이름</div>
+        <div class="col-hdr">콼럼 이름</div>
         <div class="col-hdr">타입</div>
         <div class="col-hdr">크기/값</div>
         <div class="col-hdr">DEFAULT</div>
         <div class="col-hdr center" title="Primary Key">PK</div>
         <div class="col-hdr center" title="NOT NULL">NN</div>
+        <div class="col-hdr center" title="Foreign Key">FK</div>
         <div></div>
       </div>
-
-      <!-- column rows -->
-      ${t.columns.map(col => renderColRow(t.id, col)).join('')}
-
-      <!-- add column -->
+      ${t.columns.map(col => renderColRow(t, col)).join('')}
       <div style="margin-top:12px">
-        <button class="btn btn-ghost btn-add-col" style="font-size:.82rem;padding:7px 14px">＋ 컴럼 추가</button>
+        <button class="btn btn-ghost btn-add-col" style="font-size:.82rem;padding:7px 14px">＋ 콼럼 추가</button>
       </div>
-    </div>`
-  ).join('');
+    </div>`).join('');
 }
 
-function renderColRow(tid, col) {
+function renderColRow(t, col) {
   const td       = TYPES.find(x => x.v === col.type) || {};
   const hasExtra = !!td.hasExtra;
   const isCustom = col.dflt === '__custom__';
-  const typeOpts  = TYPES.map(x =>
+
+  const typeOpts = TYPES.map(x =>
     `<option value="${x.v}"${col.type===x.v?' selected':''}>${esc(x.label)}</option>`).join('');
-  const dfltOpts  = DEFAULTS.map(d =>
+  const dfltOpts = DEFAULTS.map(d =>
     `<option value="${esc(d.v)}"${col.dflt===d.v?' selected':''}>${esc(d.label)}</option>`).join('');
+
+  // FK 참조 테이블 목록 (자기 자신 제외)
+  const otherTables = tables.filter(ot => ot.id !== t.id);
+  const fkTableOpts = [`<option value="">-- 테이블 선택 --</option>`,
+    ...otherTables.map(ot =>
+      `<option value="${ot.id}"${col.fkTable==ot.id?' selected':''}>${esc(ot.name||`table_${ot.id}`)}</option>`)
+  ].join('');
+
+  const refTable  = tables.find(ot => ot.id == col.fkTable);
+  const fkColOpts = refTable
+    ? [`<option value="">-- 콼럼 선택 --</option>`,
+       ...refTable.columns.map(rc =>
+         `<option value="${esc(rc.name)}"${col.fkCol===rc.name?' selected':''}>${esc(rc.name||`col_${rc.id}`)}</option>`)
+      ].join('')
+    : `<option value="">연참 콼럼</option>`;
+
+  const delOpts = FK_ACTIONS.map(a =>
+    `<option value="${a}"${col.fkOnDelete===a?' selected':''}>${a}</option>`).join('');
+
+  const vld = hasExtra ? validateExtra(col.type, col.extra||'') : { ok:true };
 
   return `
   <div class="col-grid" style="margin-top:8px" data-cid="${col.id}">
-    <input type="text" class="col-name"  value="${esc(col.name)}"  placeholder="column_name" />
-    <select class="col-type">${typeOpts}</select>
-    <input type="text" class="col-extra" value="${esc(col.extra||'')}" placeholder="${hasExtra ? esc(td.ph||'') : '\u2014'}" ${hasExtra?'':'disabled'} />
-    <div style="display:flex;gap:4px">
+    <div class="col-cell">
+      <input type="text" class="col-name" value="${esc(col.name)}" placeholder="column_name" />
+    </div>
+    <div class="col-cell">
+      <select class="col-type">${typeOpts}</select>
+    </div>
+    <div class="col-cell">
+      <input type="text" class="col-extra"
+        value="${esc(col.extra||'')}"
+        placeholder="${hasExtra ? esc(td.ph||'') : '\u2014'}"
+        ${hasExtra?'':'disabled'}
+        ${hasExtra && td.maxVal ? `title="열리: ${Array.isArray(td.maxVal)?'p최대'+td.maxVal[0]+', s최대'+td.maxVal[1]:열리소제목얼겪와 취라(열리: 최대 ${td.maxVal})"}` : ''}
+        ${!vld.ok ? 'class="col-extra invalid"' : 'class="col-extra"'} />
+      <span class="err-tip${!vld.ok?' show':''}">${vld.ok?'':vld.msg}</span>
+    </div>
+    <div class="col-cell" style="display:flex;gap:4px">
       <select class="col-dflt" style="flex:1">${dfltOpts}</select>
-      <input type="text" class="col-dflt-custom" value="${esc(col.dfltCustom||'')}" placeholder="값" style="width:72px;${isCustom?'':'display:none'}" />
+      <input type="text" class="col-dflt-custom" value="${esc(col.dfltCustom||'')}" placeholder="값"
+        style="width:72px;${isCustom?'':'display:none'}" />
     </div>
     <div class="cb-wrap"><input type="checkbox" class="col-pk" ${col.pk?'checked':''}></div>
     <div class="cb-wrap"><input type="checkbox" class="col-nn" ${col.nn?'checked':''}></div>
-    <button class="btn btn-danger btn-remove-col" style="padding:4px 7px">✕</button>
+    <div class="cb-wrap"><input type="checkbox" class="col-fk" ${col.fk?'checked':''}></div>
+    <button class="btn btn-danger btn-remove-col" style="padding:4px 7px;margin-top:4px">✕</button>
+    ${col.fk ? `
+    <div style="grid-column:1/-1">
+      <div class="fk-panel">
+        <div class="fk-row">
+          <label>참조 테이블</label>
+          <select class="fk-ref-table" style="flex:1">${fkTableOpts}</select>
+        </div>
+        <div class="fk-row">
+          <label>참조 콼럼</label>
+          <select class="fk-ref-col" style="flex:1">${fkColOpts}</select>
+        </div>
+        <div class="fk-row">
+          <label>ON DELETE</label>
+          <select class="fk-on-delete" style="flex:1">${delOpts}</select>
+        </div>
+      </div>
+    </div>` : ''}
   </div>`;
 }
 
-/* ====================================================
-   EVENT DELEGATION  (no inline handlers)
-==================================================== */
+/* ============================================================
+   EVENT DELEGATION
+============================================================ */
 document.getElementById('btnAddTable').addEventListener('click', () => {
-  tables.push({ id: newTid(), name: '', columns: [] });
+  tables.push({ id:newTid(), name:'', columns:[] });
   render();
 });
-
 document.getElementById('dbName').addEventListener('input', renderSQL);
 
 document.getElementById('tablesList').addEventListener('click', e => {
   const card = e.target.closest('[data-tid]');
   if (!card) return;
   const tid = +card.dataset.tid;
-
-  // 테이블 삭제
-  if (e.target.closest('.btn-remove-table')) {
-    tables = tables.filter(t => t.id !== tid);
-    render(); return;
-  }
-  // 콼럼 추가
-  if (e.target.closest('.btn-add-col')) {
-    const t = tables.find(t => t.id === tid);
-    if (t) { t.columns.push(newCol()); render(); }
-    return;
-  }
-  // 콼럼 삭제
+  if (e.target.closest('.btn-remove-table')) { tables = tables.filter(t => t.id !== tid); render(); return; }
+  if (e.target.closest('.btn-add-col'))      { const t = tables.find(t=>t.id===tid); if(t){t.columns.push(newCol());render();} return; }
   const colRow = e.target.closest('[data-cid]');
   if (colRow && e.target.closest('.btn-remove-col')) {
-    const cid = +colRow.dataset.cid;
-    const t   = tables.find(t => t.id === tid);
-    if (t) { t.columns = t.columns.filter(c => c.id !== cid); render(); }
+    const t = tables.find(t=>t.id===tid);
+    if(t){ t.columns = t.columns.filter(c=>c.id !== +colRow.dataset.cid); render(); }
+  }
+});
+
+document.getElementById('tablesList').addEventListener('change', e => {
+  const card = e.target.closest('[data-tid]');
+  if (!card) return;
+  const t = tables.find(t=>t.id === +card.dataset.tid);
+  if (!t) return;
+
+  const colRow = e.target.closest('[data-cid]');
+
+  // FK checkbox — re-render whole table card
+  if (colRow && e.target.classList.contains('col-fk')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (col) { col.fk = e.target.checked; render(); return; }
+  }
+  if (colRow && e.target.classList.contains('col-pk')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (col) { col.pk = e.target.checked; renderSQL(); return; }
+  }
+  if (colRow && e.target.classList.contains('col-nn')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (col) { col.nn = e.target.checked; renderSQL(); return; }
+  }
+  if (colRow && e.target.classList.contains('col-type')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (!col) return;
+    col.type = e.target.value;
+    const td = TYPES.find(x=>x.v===col.type);
+    col.extra = td?.hasExtra ? (td.ph||'') : '';
+    // DOM 직접 업데이트 (리렌더 없이)
+    const extraEl  = colRow.querySelector('.col-extra');
+    const errEl    = colRow.querySelector('.err-tip');
+    extraEl.value       = col.extra;
+    extraEl.disabled    = !td?.hasExtra;
+    extraEl.placeholder = td?.hasExtra ? (td.ph||'') : '\u2014';
+    extraEl.classList.remove('invalid'); errEl.classList.remove('show'); errEl.textContent='';
+    renderSQL(); return;
+  }
+  if (colRow && e.target.classList.contains('col-dflt')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (!col) return;
+    col.dflt = e.target.value;
+    const customEl = colRow.querySelector('.col-dflt-custom');
+    customEl.style.display = col.dflt==='__custom__' ? '' : 'none';
+    renderSQL(); return;
+  }
+  if (colRow && e.target.classList.contains('fk-ref-table')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (!col) return;
+    col.fkTable = e.target.value; col.fkCol = '';
+    render(); return;
+  }
+  if (colRow && e.target.classList.contains('fk-ref-col')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (col) { col.fkCol = e.target.value; renderSQL(); }
     return;
+  }
+  if (colRow && e.target.classList.contains('fk-on-delete')) {
+    const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
+    if (col) { col.fkOnDelete = e.target.value; renderSQL(); }
   }
 });
 
 document.getElementById('tablesList').addEventListener('input', e => {
   const card = e.target.closest('[data-tid]');
   if (!card) return;
-  const tid = +card.dataset.tid;
-  const t   = tables.find(t => t.id === tid);
+  const t = tables.find(t=>t.id === +card.dataset.tid);
   if (!t) return;
 
-  // 테이블 이름
-  if (e.target.classList.contains('tbl-name')) {
-    t.name = e.target.value;
-    renderSQL(); return;
-  }
+  if (e.target.classList.contains('tbl-name')) { t.name = e.target.value; renderSQL(); return; }
 
-  // 콼럼 필드
   const colRow = e.target.closest('[data-cid]');
   if (!colRow) return;
-  const cid = +colRow.dataset.cid;
-  const col = t.columns.find(c => c.id === cid);
+  const col = t.columns.find(c=>c.id === +colRow.dataset.cid);
   if (!col) return;
 
-  if (e.target.classList.contains('col-name'))         { col.name        = e.target.value;   }
-  else if (e.target.classList.contains('col-extra'))   { col.extra       = e.target.value;   }
+  if (e.target.classList.contains('col-name'))         { col.name = e.target.value; }
   else if (e.target.classList.contains('col-dflt-custom')) { col.dfltCustom = e.target.value; }
-  else if (e.target.classList.contains('col-type')) {
-    col.type = e.target.value;
-    const td = TYPES.find(x => x.v === col.type);
-    col.extra = td?.hasExtra ? (td.ph || '') : '';
-    // extra input 로 실시 갱신
-    const extraEl = colRow.querySelector('.col-extra');
-    extraEl.value    = col.extra;
-    extraEl.disabled = !td?.hasExtra;
-    extraEl.placeholder = td?.hasExtra ? (td.ph || '') : '\u2014';
+  else if (e.target.classList.contains('col-extra')) {
+    col.extra = e.target.value;
+    const vld = validateExtra(col.type, col.extra);
+    const errEl = colRow.querySelector('.err-tip');
+    e.target.classList.toggle('invalid', !vld.ok);
+    errEl.classList.toggle('show', !vld.ok);
+    errEl.textContent = vld.ok ? '' : vld.msg;
   }
-  else if (e.target.classList.contains('col-dflt')) {
-    col.dflt = e.target.value;
-    const customEl = colRow.querySelector('.col-dflt-custom');
-    customEl.style.display = col.dflt === '__custom__' ? '' : 'none';
-  }
-  else if (e.target.classList.contains('col-pk')) { col.pk = e.target.checked; }
-  else if (e.target.classList.contains('col-nn')) { col.nn = e.target.checked; }
 
   renderSQL();
 });
 
-// checkbox change
-document.getElementById('tablesList').addEventListener('change', e => {
-  const card = e.target.closest('[data-tid]');
-  if (!card) return;
-  if (!e.target.matches('.col-pk, .col-nn')) return;
-  const tid = +card.dataset.tid;
-  const t   = tables.find(t => t.id === tid);
-  const colRow = e.target.closest('[data-cid]');
-  if (!colRow || !t) return;
-  const col = t.columns.find(c => c.id === +colRow.dataset.cid);
-  if (!col) return;
-  if (e.target.classList.contains('col-pk')) col.pk = e.target.checked;
-  if (e.target.classList.contains('col-nn')) col.nn = e.target.checked;
-  renderSQL();
-});
-
-// tab switch
 document.querySelectorAll('.tab').forEach(btn => {
   btn.addEventListener('click', () => {
     dialect = btn.dataset.tab;
-    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b===btn));
     renderSQL();
   });
 });
 
-// copy
 document.getElementById('btnCopy').addEventListener('click', () => {
   const sql = buildSQL(dialect);
   if (!sql) return;
   navigator.clipboard.writeText(sql).then(() => {
-    const btn = document.getElementById('btnCopy');
-    btn.textContent = '✅ 복사됨';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '📋 복사'; btn.classList.remove('copied'); }, 1800);
+    const b = document.getElementById('btnCopy');
+    b.textContent = '✅ 복사됨'; b.classList.add('copied');
+    setTimeout(()=>{ b.textContent='📋 복사'; b.classList.remove('copied'); }, 1800);
   });
 });
 
-/* ====================================================
+/* ============================================================
    SQL GENERATION
-==================================================== */
+============================================================ */
 function resolveType(col, dl) {
   const tp = col.type, ex = (col.extra||'').trim();
   if (dl === 'mysql') {
-    if (tp==='SERIAL')   return 'INT AUTO_INCREMENT';
-    if (tp==='BOOLEAN')  return 'TINYINT(1)';
-    if (tp==='UUID')     return 'VARCHAR(36)';
-    if (tp==='DOUBLE')   return 'DOUBLE';
-    if (tp==='LONGTEXT') return 'LONGTEXT';
-    if ((tp==='VARCHAR'||tp==='CHAR') && ex) return `${tp}(${ex})`;
-    if (tp==='DECIMAL' && ex)  return `DECIMAL(${ex})`;
-    if (tp==='ENUM'    && ex)  return `ENUM(${ex})`;
+    if (tp==='SERIAL')     return 'INT AUTO_INCREMENT';
+    if (tp==='BOOLEAN')    return 'TINYINT(1)';
+    if (tp==='UUID')       return 'VARCHAR(36)';
+    if (tp==='DOUBLE')     return 'DOUBLE';
+    if (tp==='MEDIUMINT')  return 'MEDIUMINT';
+    if (tp==='TINYTEXT')   return 'TINYTEXT';
+    if (tp==='MEDIUMTEXT') return 'MEDIUMTEXT';
+    if (tp==='LONGTEXT')   return 'LONGTEXT';
+    if (tp==='TINYBLOB')   return 'TINYBLOB';
+    if (tp==='MEDIUMBLOB') return 'MEDIUMBLOB';
+    if (tp==='LONGBLOB')   return 'LONGBLOB';
+    if (tp==='YEAR')       return 'YEAR';
+    if ((tp==='VARCHAR'||tp==='CHAR'||tp==='BINARY'||tp==='VARBINARY'||tp==='BIT') && ex) return `${tp}(${ex})`;
+    if (tp==='DECIMAL' && ex) return `DECIMAL(${ex})`;
+    if (tp==='ENUM'    && ex) return `ENUM(${ex})`;
+    if (tp==='SET'     && ex) return `SET(${ex})`;
     return tp;
   } else {
-    if (tp==='SERIAL')   return 'SERIAL';
-    if (tp==='BOOLEAN')  return 'BOOLEAN';
-    if (tp==='UUID')     return 'UUID';
-    if (tp==='DATETIME') return 'TIMESTAMP';
-    if (tp==='LONGTEXT') return 'TEXT';
-    if (tp==='TINYINT')  return 'SMALLINT';
-    if (tp==='DOUBLE')   return 'DOUBLE PRECISION';
-    if (tp==='BLOB')     return 'BYTEA';
-    if (tp==='ENUM' && ex) return `VARCHAR(50) CHECK (${col.name||'col'} IN (${ex}))`;
+    if (tp==='SERIAL')     return 'SERIAL';
+    if (tp==='BOOLEAN')    return 'BOOLEAN';
+    if (tp==='UUID')       return 'UUID';
+    if (tp==='DATETIME')   return 'TIMESTAMP';
+    if (tp==='LONGTEXT'||tp==='MEDIUMTEXT'||tp==='TINYTEXT') return 'TEXT';
+    if (tp==='TINYINT')    return 'SMALLINT';
+    if (tp==='MEDIUMINT')  return 'INTEGER';
+    if (tp==='DOUBLE')     return 'DOUBLE PRECISION';
+    if (tp==='BLOB'||tp==='TINYBLOB'||tp==='MEDIUMBLOB'||tp==='LONGBLOB') return 'BYTEA';
+    if (tp==='YEAR')       return 'SMALLINT';
+    if (tp==='SET' && ex)  return `TEXT CHECK (${col.name||'col'} IN (${ex}))`;
+    if (tp==='ENUM' && ex) return `VARCHAR(100) CHECK (${col.name||'col'} IN (${ex}))`;
     if ((tp==='VARCHAR'||tp==='CHAR') && ex) return `${tp}(${ex})`;
+    if ((tp==='BINARY'||tp==='VARBINARY') && ex) return `BYTEA`;
+    if (tp==='BIT' && ex)  return `BIT(${ex})`;
     if (tp==='DECIMAL' && ex) return `NUMERIC(${ex})`;
     return tp;
   }
@@ -387,41 +508,46 @@ function resolveType(col, dl) {
 
 function getDflt(col) {
   if (!col.dflt) return '';
-  if (col.dflt === '__custom__') return col.dfltCustom || '';
+  if (col.dflt==='__custom__') return col.dfltCustom||'';
   return col.dflt;
 }
 
 function buildSQL(dl) {
   const dbName = document.getElementById('dbName').value.trim();
-
-  // 콼럼이 하나라도 있는 테이블만 필터
-  const validTables = tables.filter(t => t.columns.length > 0);
-  if (validTables.length === 0) return '';
+  const valid  = tables.filter(t => t.columns.length > 0);
+  if (!valid.length) return '';
 
   const lines = [];
+  if (dbName) { lines.push(dl==='mysql' ? `USE ${dbName};` : `\\c ${dbName}`); lines.push(''); }
 
-  if (dbName) {
-    lines.push(dl === 'mysql' ? `USE ${dbName};` : `\\c ${dbName}`);
-    lines.push('');
-  }
-
-  validTables.forEach((t, i) => {
-    const tName = t.name || `table_${i+1}`;
+  valid.forEach((t, ti) => {
+    const tName = t.name || `table_${ti+1}`;
     lines.push(`CREATE TABLE ${tName} (`);
 
-    const colDefs = t.columns.map((col, ci) => {
+    const defs = t.columns.map((col, ci) => {
       const name = col.name || `col_${ci+1}`;
       let line = `    ${name} ${resolveType(col, dl)}`;
-      if (col.nn)          line += ' NOT NULL';
+      if (col.nn)         line += ' NOT NULL';
       const d = getDflt(col);
-      if (d)               line += ` DEFAULT ${d}`;
-      if (col.pk)          line += ' PRIMARY KEY';
+      if (d)              line += ` DEFAULT ${d}`;
+      if (col.pk)         line += ' PRIMARY KEY';
       return line;
     });
 
-    lines.push(colDefs.map((l, i) => i < colDefs.length-1 ? l+',' : l).join('\n'));
+    // FK constraints
+    const fkDefs = t.columns
+      .filter(col => col.fk && col.fkTable && col.fkCol)
+      .map(col => {
+        const refT = tables.find(ot=>ot.id==col.fkTable);
+        const refName = refT ? (refT.name||`table_${refT.id}`) : col.fkTable;
+        const colName = col.name || `col_${col.id}`;
+        return `    FOREIGN KEY (${colName}) REFERENCES ${refName} (${col.fkCol}) ON DELETE ${col.fkOnDelete}`;
+      });
+
+    const all = [...defs, ...fkDefs];
+    lines.push(all.map((l,i) => i<all.length-1 ? l+',' : l).join('\n'));
     lines.push(');');
-    if (i < validTables.length-1) lines.push('');
+    if (ti < valid.length-1) lines.push('');
   });
 
   return lines.join('\n');
@@ -430,24 +556,24 @@ function buildSQL(dl) {
 function renderSQL() {
   const sql = buildSQL(dialect);
   const pre = document.getElementById('sqlOut');
-  if (!sql) {
-    pre.innerHTML = '<span class="cm">-- 테이블과 컴럼을 추가하면 SQL이 생성됩니다</span>';
-    return;
-  }
+  if (!sql) { pre.innerHTML='<span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span>'; return; }
   pre.innerHTML = highlight(sql);
 }
 
-/* ====================================================
+/* ============================================================
    SYNTAX HIGHLIGHT
-==================================================== */
+============================================================ */
 const KW = ['CREATE','TABLE','USE','PRIMARY','KEY','NOT','NULL','DEFAULT',
   'AUTO_INCREMENT','SERIAL','UNIQUE','CHECK','IN','REFERENCES','FOREIGN',
-  'ON','DELETE','CASCADE','CONSTRAINT'];
+  'ON','DELETE','CASCADE','RESTRICT','SET','NO','ACTION','CONSTRAINT'];
 const TY_LIST = [
   'DOUBLE PRECISION','AUTO_INCREMENT',
-  'INT','BIGINT','SMALLINT','TINYINT','FLOAT','DOUBLE','DECIMAL','NUMERIC',
-  'VARCHAR','CHAR','TEXT','LONGTEXT','BOOLEAN','DATE','DATETIME',
-  'TIMESTAMP','TIME','JSON','BLOB','UUID','BYTEA','ENUM','SERIAL',
+  'TINYINT','SMALLINT','MEDIUMINT','INT','BIGINT','FLOAT','DOUBLE','DECIMAL','NUMERIC',
+  'TINYTEXT','TEXT','MEDIUMTEXT','LONGTEXT',
+  'TINYBLOB','BLOB','MEDIUMBLOB','LONGBLOB',
+  'BINARY','VARBINARY','VARCHAR','CHAR','BIT',
+  'BOOLEAN','DATE','DATETIME','TIMESTAMP','TIME','YEAR',
+  'JSON','UUID','BYTEA','ENUM','SET','SERIAL',
 ];
 
 function highlight(sql) {
@@ -467,9 +593,6 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ====================================================
-   INIT — empty state (no sample data)
-==================================================== */
 renderSQL();
 </script>
 </body>

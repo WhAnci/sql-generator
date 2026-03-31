@@ -11,7 +11,6 @@
       --surface2: #22263a;
       --border: #2e3350;
       --accent: #6c8af7;
-      --accent2: #a78bfa;
       --danger: #f87171;
       --success: #34d399;
       --text: #e2e8f0;
@@ -22,82 +21,97 @@
     body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
     header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
     header h1 { font-size: 1.4rem; font-weight: 700; }
-    header span { font-size: 0.75rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 24px; }
+    header .badge { font-size: 0.75rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 24px; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
-    label { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
-    input[type=text], select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; color: var(--text); font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .field-label { font-size: 0.78rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    input[type=text], select {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      padding: 9px 11px; color: var(--text); font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s; width: 100%;
+    }
     input[type=text]:focus, select:focus { border-color: var(--accent); }
-    input[type=text]:disabled { opacity: 0.25; cursor: not-allowed; }
-    .btn { border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; display: inline-flex; align-items: center; gap: 6px; }
-    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    input:disabled { opacity: 0.25; cursor: not-allowed; }
+    .btn { border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: opacity .15s, transform .1s; }
+    .btn:hover { opacity: .85; transform: translateY(-1px); }
     .btn-primary { background: var(--accent); color: #fff; }
-    .btn-danger  { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; font-size: 0.8rem; }
     .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-danger  { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; font-size: 0.8rem; }
     .btn-copy    { background: var(--surface2); border: 1px solid var(--border); color: var(--accent); padding: 6px 14px; font-size: 0.82rem; }
     .btn-copy.copied { background: var(--success); color: #0f1117; border-color: var(--success); }
-    /* col grid: name | type | size | default | PK | NN | del */
+    /* 7-col grid: name | type | size | default | PK | NN | del */
     .col-grid { display: grid; grid-template-columns: 1.6fr 1.5fr 0.85fr 1.3fr 2.6rem 2.6rem 2rem; gap: 7px; align-items: center; }
-    .col-hdr { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); text-align: center; }
-    .col-hdr:first-child, .col-hdr:nth-child(2), .col-hdr:nth-child(3), .col-hdr:nth-child(4) { text-align: left; }
-    .col-grid input, .col-grid select { font-size: 0.88rem; padding: 7px 9px; }
-    .cb-wrap { display: flex; justify-content: center; align-items: center; }
+    .col-hdr { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .col-hdr.center { text-align: center; }
+    .cb-wrap { display: flex; justify-content: center; }
     input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
     .tables-list { display: flex; flex-direction: column; gap: 20px; }
+    .empty-msg { text-align: center; padding: 36px; color: var(--muted); }
     .output-tabs { display: flex; gap: 8px; }
-    .tab { padding: 7px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all 0.15s; }
+    .tab { padding: 7px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all .15s; }
     .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .output-area { position: relative; margin-top: 14px; }
-    pre { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 70px 20px 20px; font-size: 0.9rem; line-height: 1.9; overflow-x: auto; white-space: pre; color: #a9c5e8; min-height: 120px; font-family: 'Fira Code','Cascadia Code','Consolas',monospace; }
-    .output-actions { position: absolute; top: 10px; right: 12px; }
+    .out-wrap { position: relative; margin-top: 14px; }
+    pre { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 70px 20px 20px; font-size: 0.9rem; line-height: 1.9; overflow-x: auto; white-space: pre; color: #a9c5e8; min-height: 100px; font-family: 'Fira Code','Cascadia Code','Consolas',monospace; }
+    .out-actions { position: absolute; top: 10px; right: 12px; }
+    /* syntax */
     .kw { color: #c792ea; font-weight: 700; }
     .ty { color: #f78c6c; }
     .cm { color: #546e7a; font-style: italic; }
     .st { color: #c3e88d; }
-    .empty-state { text-align: center; padding: 40px; color: var(--muted); }
   </style>
 </head>
 <body>
 <header>
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="3" rx="1.5" fill="#6c8af7"/><rect x="3" y="10.5" width="18" height="3" rx="1.5" fill="#a78bfa"/><rect x="3" y="16" width="18" height="3" rx="1.5" fill="#34d399"/></svg>
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+    <rect x="3" y="5"    width="18" height="3" rx="1.5" fill="#6c8af7"/>
+    <rect x="3" y="10.5" width="18" height="3" rx="1.5" fill="#a78bfa"/>
+    <rect x="3" y="16"   width="18" height="3" rx="1.5" fill="#34d399"/>
+  </svg>
   <h1>SQL Generator</h1>
-  <span>GitHub Pages</span>
+  <span class="badge">GitHub Pages</span>
 </header>
 
-<div class="container">
+<div class="wrap">
+  <!-- DB Name -->
   <div class="card">
-    <label>데이터베이스 이름</label>
-    <input type="text" id="dbName" placeholder="my_database" oninput="renderSQL()" style="max-width:360px" />
+    <span class="field-label">데이터베이스 이름</span>
+    <input type="text" id="dbName" placeholder="my_database" style="max-width:360px" />
   </div>
 
+  <!-- Tables -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <div style="font-size:1.05rem;font-weight:700">테이블 목록</div>
-      <button class="btn btn-primary" onclick="addTable()">＋ 테이블 추가</button>
+      <span style="font-size:1.05rem;font-weight:700">테이블 목록</span>
+      <button class="btn btn-primary" id="btnAddTable">＋ 테이블 추가</button>
     </div>
     <div class="tables-list" id="tablesList">
-      <div class="empty-state" id="emptyState">테이블을 추가해보세요 👆</div>
+      <div class="empty-msg">테이블을 추가해보세요 👆</div>
     </div>
   </div>
 
+  <!-- Output -->
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:1.05rem;font-weight:700">생성된 SQL</div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:1.05rem;font-weight:700">생성된 SQL</span>
       <div class="output-tabs">
-        <button class="tab active" id="tab-mysql" onclick="switchTab('mysql')">MySQL</button>
-        <button class="tab" id="tab-pg"    onclick="switchTab('pg')">PostgreSQL</button>
+        <button class="tab active" data-tab="mysql">MySQL</button>
+        <button class="tab"        data-tab="pg">PostgreSQL</button>
       </div>
     </div>
-    <div class="output-area">
-      <pre id="sqlOutput"><span class="cm">-- 테이블을 추가하면 SQL이 생성됩니다</span></pre>
-      <div class="output-actions">
-        <button class="btn btn-copy" id="copyBtn" onclick="copySQL()">📋 복사</button>
+    <div class="out-wrap">
+      <pre id="sqlOut"><span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span></pre>
+      <div class="out-actions">
+        <button class="btn btn-copy" id="btnCopy">📋 복사</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+/* ====================================================
+   DATA MODEL
+   tables = [{ id, name, columns: [{ id, name, type, extra, dflt, dfltCustom, pk, nn }] }]
+==================================================== */
 const TYPES = [
   { v:'INT',       label:'INT',                    hasExtra:false },
   { v:'BIGINT',    label:'BIGINT',                 hasExtra:false },
@@ -105,9 +119,9 @@ const TYPES = [
   { v:'TINYINT',   label:'TINYINT',                hasExtra:false },
   { v:'FLOAT',     label:'FLOAT',                  hasExtra:false },
   { v:'DOUBLE',    label:'DOUBLE',                 hasExtra:false },
-  { v:'DECIMAL',   label:'DECIMAL(p,s)',            hasExtra:true,  ph:'18,2' },
-  { v:'VARCHAR',   label:'VARCHAR(n)',              hasExtra:true,  ph:'255'  },
-  { v:'CHAR',      label:'CHAR(n)',                 hasExtra:true,  ph:'10'   },
+  { v:'DECIMAL',   label:'DECIMAL(p,s)',            hasExtra:true,  ph:'18,2'         },
+  { v:'VARCHAR',   label:'VARCHAR(n)',              hasExtra:true,  ph:'255'          },
+  { v:'CHAR',      label:'CHAR(n)',                 hasExtra:true,  ph:'10'           },
   { v:'TEXT',      label:'TEXT',                   hasExtra:false },
   { v:'LONGTEXT',  label:'LONGTEXT',               hasExtra:false },
   { v:'BOOLEAN',   label:'BOOLEAN',                hasExtra:false },
@@ -121,221 +135,315 @@ const TYPES = [
   { v:'ENUM',      label:'ENUM(...)',               hasExtra:true,  ph:"'val1','val2'" },
   { v:'SERIAL',    label:'SERIAL / AUTO_INCREMENT', hasExtra:false },
 ];
-
 const DEFAULTS = [
-  { v:'',                   label:'(없음)' },
-  { v:'CURRENT_TIMESTAMP',  label:'CURRENT_TIMESTAMP' },
-  { v:'NOW()',              label:'NOW()' },
-  { v:'0',                  label:'0' },
-  { v:'1',                  label:'1' },
-  { v:"''",                 label:"'' (빈 문자열)" },
-  { v:'NULL',               label:'NULL' },
-  { v:'TRUE',               label:'TRUE' },
-  { v:'FALSE',              label:'FALSE' },
-  { v:'__custom__',         label:'직접 입력...' },
+  { v:'',                  label:'(없음)'           },
+  { v:'CURRENT_TIMESTAMP', label:'CURRENT_TIMESTAMP' },
+  { v:'NOW()',             label:'NOW()'             },
+  { v:'0',                 label:'0'                 },
+  { v:'1',                 label:'1'                 },
+  { v:"''",                label:"'' (빈 문자열)"  },
+  { v:'NULL',              label:'NULL'              },
+  { v:'TRUE',              label:'TRUE'              },
+  { v:'FALSE',             label:'FALSE'             },
+  { v:'__custom__',        label:'직접 입력...'      },
 ];
 
-let tables = [];
-let currentTab = 'mysql';
-let tid = 0;
+let tables  = [];
+let dialect = 'mysql';
+let _tid = 0, _cid = 0;
+newTid = () => ++_tid;
+newCid = () => ++_cid;
 
-function addTable() {
-  const id = ++tid;
-  tables.push({ id, name: `table_${id}`, columns: [] });
+function newCol() {
+  return { id: newCid(), name:'', type:'VARCHAR', extra:'255', dflt:'', dfltCustom:'', pk:false, nn:false };
+}
+
+/* ====================================================
+   RENDER
+==================================================== */
+function render() {
   renderTables();
   renderSQL();
 }
-function removeTable(id) {
-  tables = tables.filter(t => t.id !== id);
-  renderTables(); renderSQL();
-}
-function addColumn(tableId) {
-  const t = tables.find(t => t.id === tableId);
-  if (!t) return;
-  t.columns.push({ name:'', type:'VARCHAR', extra:'255', dflt:'', dfltCustom:'', pk:false, nn:false });
-  renderTables(); renderSQL();
-}
-function removeColumn(tableId, idx) {
-  const t = tables.find(t => t.id === tableId);
-  if (!t) return;
-  t.columns.splice(idx, 1);
-  renderTables(); renderSQL();
-}
-function setField(tableId, idx, field, val) {
-  const t = tables.find(t => t.id === tableId);
-  if (!t) return;
-  if (idx === -1) { t.name = val; renderSQL(); return; }
-  t.columns[idx][field] = val;
-  if (field === 'type') {
-    const td = TYPES.find(x => x.v === val);
-    t.columns[idx].extra = td?.hasExtra ? (td.ph || '') : '';
-    renderTables();
-  }
-  renderSQL();
-}
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
 
 function renderTables() {
-  const container = document.getElementById('tablesList');
-  const empty     = document.getElementById('emptyState');
+  const list = document.getElementById('tablesList');
+
   if (tables.length === 0) {
-    container.innerHTML = '';
-    container.appendChild(empty);
-    empty.style.display = 'block';
+    list.innerHTML = '<div class="empty-msg">테이블을 추가해보세요 👆</div>';
     return;
   }
-  empty.style.display = 'none';
-  container.innerHTML = tables.map(t => {
-    const rows = t.columns.map((col, idx) => {
-      const td       = TYPES.find(x => x.v === col.type) || {};
-      const hasExtra = !!td.hasExtra;
-      const isCustom = col.dflt === '__custom__';
-      return `
-      <div class="col-grid" style="margin-top:8px">
-        <input type="text" value="${esc(col.name)}" placeholder="column_name"
-          oninput="setField(${t.id},${idx},'name',this.value)" />
-        <select onchange="setField(${t.id},${idx},'type',this.value)">
-          ${TYPES.map(x=>`<option value="${x.v}"${col.type===x.v?' selected':''}>${esc(x.label)}</option>`).join('')}
-        </select>
-        <input type="text" value="${esc(col.extra||'')}" placeholder="${hasExtra ? esc(td.ph||'') : '\u2014'}"
-          ${hasExtra ? '' : 'disabled'}
-          oninput="setField(${t.id},${idx},'extra',this.value)" />
-        <div style="display:flex;gap:4px;">
-          <select style="flex:1" onchange="setField(${t.id},${idx},'dflt',this.value)">
-            ${DEFAULTS.map(d=>`<option value="${esc(d.v)}"${col.dflt===d.v?' selected':''}>${esc(d.label)}</option>`).join('')}
-          </select>
-          <input type="text" value="${esc(col.dfltCustom||'')}" placeholder="값"
-            style="width:72px;${isCustom?'':'display:none'}"
-            oninput="setField(${t.id},${idx},'dfltCustom',this.value)" />
-        </div>
-        <div class="cb-wrap"><input type="checkbox" ${col.pk?'checked':''} onchange="setField(${t.id},${idx},'pk',this.checked)" /></div>
-        <div class="cb-wrap"><input type="checkbox" ${col.nn?'checked':''} onchange="setField(${t.id},${idx},'nn',this.checked)" /></div>
-        <button class="btn btn-danger" style="padding:4px 7px" onclick="removeColumn(${t.id},${idx})">✕</button>
-      </div>`;
-    }).join('');
 
-    return `
-    <div class="card" style="background:var(--surface2)">
+  list.innerHTML = tables.map(t => `
+    <div class="card" style="background:var(--surface2)" data-tid="${t.id}">
+      <!-- table header -->
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:8px">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="5" rx="1" fill="#6c8af7"/><rect x="3" y="10" width="18" height="5" rx="1" fill="#a78bfa" opacity="0.7"/><rect x="3" y="17" width="18" height="4" rx="1" fill="#34d399" opacity="0.5"/></svg>
-          <input type="text" value="${esc(t.name)}" placeholder="table_name"
-            style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:1rem;font-weight:700;width:200px;outline:none;"
-            oninput="setField(${t.id},-1,'name',this.value)" />
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3"  width="18" height="5" rx="1" fill="#6c8af7"/>
+            <rect x="3" y="10" width="18" height="5" rx="1" fill="#a78bfa" opacity=".7"/>
+            <rect x="3" y="17" width="18" height="4" rx="1" fill="#34d399" opacity=".5"/>
+          </svg>
+          <input type="text" class="tbl-name"
+            value="${esc(t.name)}" placeholder="table_name"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:1rem;font-weight:700;width:220px;outline:none;" />
         </div>
-        <button class="btn btn-danger" onclick="removeTable(${t.id})">✕ 삭제</button>
+        <button class="btn btn-danger btn-remove-table">✕ 삭제</button>
       </div>
-      <div class="col-grid" style="margin-bottom:2px">
+
+      <!-- column headers -->
+      <div class="col-grid" style="margin-bottom:4px">
         <div class="col-hdr">컬럼 이름</div>
         <div class="col-hdr">타입</div>
         <div class="col-hdr">크기/값</div>
         <div class="col-hdr">DEFAULT</div>
-        <div class="col-hdr" title="Primary Key">PK</div>
-        <div class="col-hdr" title="NOT NULL">NN</div>
+        <div class="col-hdr center" title="Primary Key">PK</div>
+        <div class="col-hdr center" title="NOT NULL">NN</div>
         <div></div>
       </div>
-      ${rows}
+
+      <!-- column rows -->
+      ${t.columns.map(col => renderColRow(t.id, col)).join('')}
+
+      <!-- add column -->
       <div style="margin-top:12px">
-        <button class="btn btn-ghost" style="font-size:0.82rem;padding:7px 14px" onclick="addColumn(${t.id})">＋ 컬럼 추가</button>
+        <button class="btn btn-ghost btn-add-col" style="font-size:.82rem;padding:7px 14px">＋ 컴럼 추가</button>
       </div>
-    </div>`;
-  }).join('');
+    </div>`
+  ).join('');
 }
 
-/* ────────────────────────────────────────────
-   SQL 생성 - 요청 포맷:
+function renderColRow(tid, col) {
+  const td       = TYPES.find(x => x.v === col.type) || {};
+  const hasExtra = !!td.hasExtra;
+  const isCustom = col.dflt === '__custom__';
+  const typeOpts  = TYPES.map(x =>
+    `<option value="${x.v}"${col.type===x.v?' selected':''}>${esc(x.label)}</option>`).join('');
+  const dfltOpts  = DEFAULTS.map(d =>
+    `<option value="${esc(d.v)}"${col.dflt===d.v?' selected':''}>${esc(d.label)}</option>`).join('');
 
-   USE <db>;
-   CREATE TABLE <tbl> (
-       id         VARCHAR(36) PRIMARY KEY,
-       email      VARCHAR(255) NOT NULL,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   );
-──────────────────────────────────────────── */
-function resolveType(col, dialect) {
-  const tp = col.type;
-  const ex = (col.extra || '').trim();
-  if (dialect === 'mysql') {
-    if (tp === 'SERIAL')   return 'INT AUTO_INCREMENT';
-    if (tp === 'BOOLEAN')  return 'TINYINT(1)';
-    if (tp === 'UUID')     return 'VARCHAR(36)';
-    if (tp === 'DOUBLE')   return 'DOUBLE';
-    if (tp === 'LONGTEXT') return 'LONGTEXT';
+  return `
+  <div class="col-grid" style="margin-top:8px" data-cid="${col.id}">
+    <input type="text" class="col-name"  value="${esc(col.name)}"  placeholder="column_name" />
+    <select class="col-type">${typeOpts}</select>
+    <input type="text" class="col-extra" value="${esc(col.extra||'')}" placeholder="${hasExtra ? esc(td.ph||'') : '\u2014'}" ${hasExtra?'':'disabled'} />
+    <div style="display:flex;gap:4px">
+      <select class="col-dflt" style="flex:1">${dfltOpts}</select>
+      <input type="text" class="col-dflt-custom" value="${esc(col.dfltCustom||'')}" placeholder="값" style="width:72px;${isCustom?'':'display:none'}" />
+    </div>
+    <div class="cb-wrap"><input type="checkbox" class="col-pk" ${col.pk?'checked':''}></div>
+    <div class="cb-wrap"><input type="checkbox" class="col-nn" ${col.nn?'checked':''}></div>
+    <button class="btn btn-danger btn-remove-col" style="padding:4px 7px">✕</button>
+  </div>`;
+}
+
+/* ====================================================
+   EVENT DELEGATION  (no inline handlers)
+==================================================== */
+document.getElementById('btnAddTable').addEventListener('click', () => {
+  tables.push({ id: newTid(), name: '', columns: [] });
+  render();
+});
+
+document.getElementById('dbName').addEventListener('input', renderSQL);
+
+document.getElementById('tablesList').addEventListener('click', e => {
+  const card = e.target.closest('[data-tid]');
+  if (!card) return;
+  const tid = +card.dataset.tid;
+
+  // 테이블 삭제
+  if (e.target.closest('.btn-remove-table')) {
+    tables = tables.filter(t => t.id !== tid);
+    render(); return;
+  }
+  // 콼럼 추가
+  if (e.target.closest('.btn-add-col')) {
+    const t = tables.find(t => t.id === tid);
+    if (t) { t.columns.push(newCol()); render(); }
+    return;
+  }
+  // 콼럼 삭제
+  const colRow = e.target.closest('[data-cid]');
+  if (colRow && e.target.closest('.btn-remove-col')) {
+    const cid = +colRow.dataset.cid;
+    const t   = tables.find(t => t.id === tid);
+    if (t) { t.columns = t.columns.filter(c => c.id !== cid); render(); }
+    return;
+  }
+});
+
+document.getElementById('tablesList').addEventListener('input', e => {
+  const card = e.target.closest('[data-tid]');
+  if (!card) return;
+  const tid = +card.dataset.tid;
+  const t   = tables.find(t => t.id === tid);
+  if (!t) return;
+
+  // 테이블 이름
+  if (e.target.classList.contains('tbl-name')) {
+    t.name = e.target.value;
+    renderSQL(); return;
+  }
+
+  // 콼럼 필드
+  const colRow = e.target.closest('[data-cid]');
+  if (!colRow) return;
+  const cid = +colRow.dataset.cid;
+  const col = t.columns.find(c => c.id === cid);
+  if (!col) return;
+
+  if (e.target.classList.contains('col-name'))         { col.name        = e.target.value;   }
+  else if (e.target.classList.contains('col-extra'))   { col.extra       = e.target.value;   }
+  else if (e.target.classList.contains('col-dflt-custom')) { col.dfltCustom = e.target.value; }
+  else if (e.target.classList.contains('col-type')) {
+    col.type = e.target.value;
+    const td = TYPES.find(x => x.v === col.type);
+    col.extra = td?.hasExtra ? (td.ph || '') : '';
+    // extra input 로 실시 갱신
+    const extraEl = colRow.querySelector('.col-extra');
+    extraEl.value    = col.extra;
+    extraEl.disabled = !td?.hasExtra;
+    extraEl.placeholder = td?.hasExtra ? (td.ph || '') : '\u2014';
+  }
+  else if (e.target.classList.contains('col-dflt')) {
+    col.dflt = e.target.value;
+    const customEl = colRow.querySelector('.col-dflt-custom');
+    customEl.style.display = col.dflt === '__custom__' ? '' : 'none';
+  }
+  else if (e.target.classList.contains('col-pk')) { col.pk = e.target.checked; }
+  else if (e.target.classList.contains('col-nn')) { col.nn = e.target.checked; }
+
+  renderSQL();
+});
+
+// checkbox change
+document.getElementById('tablesList').addEventListener('change', e => {
+  const card = e.target.closest('[data-tid]');
+  if (!card) return;
+  if (!e.target.matches('.col-pk, .col-nn')) return;
+  const tid = +card.dataset.tid;
+  const t   = tables.find(t => t.id === tid);
+  const colRow = e.target.closest('[data-cid]');
+  if (!colRow || !t) return;
+  const col = t.columns.find(c => c.id === +colRow.dataset.cid);
+  if (!col) return;
+  if (e.target.classList.contains('col-pk')) col.pk = e.target.checked;
+  if (e.target.classList.contains('col-nn')) col.nn = e.target.checked;
+  renderSQL();
+});
+
+// tab switch
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    dialect = btn.dataset.tab;
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b === btn));
+    renderSQL();
+  });
+});
+
+// copy
+document.getElementById('btnCopy').addEventListener('click', () => {
+  const sql = buildSQL(dialect);
+  if (!sql) return;
+  navigator.clipboard.writeText(sql).then(() => {
+    const btn = document.getElementById('btnCopy');
+    btn.textContent = '✅ 복사됨';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 복사'; btn.classList.remove('copied'); }, 1800);
+  });
+});
+
+/* ====================================================
+   SQL GENERATION
+==================================================== */
+function resolveType(col, dl) {
+  const tp = col.type, ex = (col.extra||'').trim();
+  if (dl === 'mysql') {
+    if (tp==='SERIAL')   return 'INT AUTO_INCREMENT';
+    if (tp==='BOOLEAN')  return 'TINYINT(1)';
+    if (tp==='UUID')     return 'VARCHAR(36)';
+    if (tp==='DOUBLE')   return 'DOUBLE';
+    if (tp==='LONGTEXT') return 'LONGTEXT';
     if ((tp==='VARCHAR'||tp==='CHAR') && ex) return `${tp}(${ex})`;
-    if (tp==='DECIMAL' && ex) return `DECIMAL(${ex})`;
-    if (tp==='ENUM' && ex)    return `ENUM(${ex})`;
+    if (tp==='DECIMAL' && ex)  return `DECIMAL(${ex})`;
+    if (tp==='ENUM'    && ex)  return `ENUM(${ex})`;
     return tp;
   } else {
-    if (tp === 'SERIAL')   return 'SERIAL';
-    if (tp === 'BOOLEAN')  return 'BOOLEAN';
-    if (tp === 'UUID')     return 'UUID';
-    if (tp === 'DATETIME') return 'TIMESTAMP';
-    if (tp === 'LONGTEXT') return 'TEXT';
-    if (tp === 'TINYINT')  return 'SMALLINT';
-    if (tp === 'DOUBLE')   return 'DOUBLE PRECISION';
-    if (tp === 'BLOB')     return 'BYTEA';
-    if (tp==='ENUM' && ex) return `VARCHAR(50) CHECK (${col.name} IN (${ex}))`;
+    if (tp==='SERIAL')   return 'SERIAL';
+    if (tp==='BOOLEAN')  return 'BOOLEAN';
+    if (tp==='UUID')     return 'UUID';
+    if (tp==='DATETIME') return 'TIMESTAMP';
+    if (tp==='LONGTEXT') return 'TEXT';
+    if (tp==='TINYINT')  return 'SMALLINT';
+    if (tp==='DOUBLE')   return 'DOUBLE PRECISION';
+    if (tp==='BLOB')     return 'BYTEA';
+    if (tp==='ENUM' && ex) return `VARCHAR(50) CHECK (${col.name||'col'} IN (${ex}))`;
     if ((tp==='VARCHAR'||tp==='CHAR') && ex) return `${tp}(${ex})`;
     if (tp==='DECIMAL' && ex) return `NUMERIC(${ex})`;
     return tp;
   }
 }
 
-function getDefault(col) {
+function getDflt(col) {
   if (!col.dflt) return '';
   if (col.dflt === '__custom__') return col.dfltCustom || '';
   return col.dflt;
 }
 
-function generateSQL(dialect) {
+function buildSQL(dl) {
   const dbName = document.getElementById('dbName').value.trim();
-  const out = [];
 
-  // USE / \c
+  // 콼럼이 하나라도 있는 테이블만 필터
+  const validTables = tables.filter(t => t.columns.length > 0);
+  if (validTables.length === 0) return '';
+
+  const lines = [];
+
   if (dbName) {
-    out.push(dialect === 'mysql' ? `USE ${dbName};` : `\\c ${dbName}`);
-    out.push('');
+    lines.push(dl === 'mysql' ? `USE ${dbName};` : `\\c ${dbName}`);
+    lines.push('');
   }
 
-  tables.forEach((t, ti) => {
-    const tName = t.name || `table_${ti+1}`;
-    out.push(`CREATE TABLE ${tName} (`);
+  validTables.forEach((t, i) => {
+    const tName = t.name || `table_${i+1}`;
+    lines.push(`CREATE TABLE ${tName} (`);
 
-    const colLines = t.columns.map((col, ci) => {
-      const name     = col.name || `col_${ci+1}`;
-      const typePart = resolveType(col, dialect);
-      const dflt     = getDefault(col);
-
-      let line = `    ${name} ${typePart}`;
-
-      // inline constraints — 순서: NOT NULL → DEFAULT → PRIMARY KEY
-      if (col.nn)  line += ' NOT NULL';
-      if (dflt)    line += ` DEFAULT ${dflt}`;
-      if (col.pk)  line += ' PRIMARY KEY';
-
+    const colDefs = t.columns.map((col, ci) => {
+      const name = col.name || `col_${ci+1}`;
+      let line = `    ${name} ${resolveType(col, dl)}`;
+      if (col.nn)          line += ' NOT NULL';
+      const d = getDflt(col);
+      if (d)               line += ` DEFAULT ${d}`;
+      if (col.pk)          line += ' PRIMARY KEY';
       return line;
     });
 
-    // 마지막 컬럼 제외 쉼표
-    const joined = colLines.map((l, i) => i < colLines.length - 1 ? l + ',' : l).join('\n');
-    out.push(joined);
-    out.push(');');
-
-    if (ti < tables.length - 1) out.push('');
+    lines.push(colDefs.map((l, i) => i < colDefs.length-1 ? l+',' : l).join('\n'));
+    lines.push(');');
+    if (i < validTables.length-1) lines.push('');
   });
 
-  return out.join('\n');
+  return lines.join('\n');
 }
 
-const KW = [
-  'CREATE','TABLE','USE','PRIMARY','KEY','NOT','NULL','DEFAULT',
-  'AUTO_INCREMENT','SERIAL','UNIQUE','CHECK','IN','REFERENCES',
-  'FOREIGN','ON','DELETE','CASCADE','CONSTRAINT',
-];
-const TY = [
+function renderSQL() {
+  const sql = buildSQL(dialect);
+  const pre = document.getElementById('sqlOut');
+  if (!sql) {
+    pre.innerHTML = '<span class="cm">-- 테이블과 컴럼을 추가하면 SQL이 생성됩니다</span>';
+    return;
+  }
+  pre.innerHTML = highlight(sql);
+}
+
+/* ====================================================
+   SYNTAX HIGHLIGHT
+==================================================== */
+const KW = ['CREATE','TABLE','USE','PRIMARY','KEY','NOT','NULL','DEFAULT',
+  'AUTO_INCREMENT','SERIAL','UNIQUE','CHECK','IN','REFERENCES','FOREIGN',
+  'ON','DELETE','CASCADE','CONSTRAINT'];
+const TY_LIST = [
   'DOUBLE PRECISION','AUTO_INCREMENT',
   'INT','BIGINT','SMALLINT','TINYINT','FLOAT','DOUBLE','DECIMAL','NUMERIC',
   'VARCHAR','CHAR','TEXT','LONGTEXT','BOOLEAN','DATE','DATETIME',
@@ -343,81 +451,26 @@ const TY = [
 ];
 
 function highlight(sql) {
-  // escape html first
   let h = sql.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  // string literals
   h = h.replace(/('(?:[^'\\]|\\.)*')/g, '<span class="st">$1</span>');
-  // comments
   h = h.replace(/(--[^\n]*)/g, '<span class="cm">$1</span>');
-  // types (longest first to avoid partial match)
-  TY.slice().sort((a,b)=>b.length-a.length).forEach(tp => {
-    h = h.replace(new RegExp(`(?<![\\w>])(${tp.replace('(',`\\(`).replace(')',`\\)`)})(?![\\w<])`, 'g'),
-      '<span class="ty">$1</span>');
+  TY_LIST.slice().sort((a,b)=>b.length-a.length).forEach(tp => {
+    h = h.replace(new RegExp(`(?<![\\w>])(${tp})(?![\\w<])`, 'g'), '<span class="ty">$1</span>');
   });
-  // keywords
   KW.forEach(kw => {
     h = h.replace(new RegExp(`(?<![\\w>])(${kw})(?![\\w<])`, 'g'), '<span class="kw">$1</span>');
   });
   return h;
 }
 
-function renderSQL() {
-  const sql = generateSQL(currentTab);
-  const pre = document.getElementById('sqlOutput');
-  if (!sql.trim()) {
-    pre.innerHTML = '<span class="cm">-- 테이블을 추가하면 SQL이 생성됩니다</span>';
-    return;
-  }
-  pre.innerHTML = highlight(sql);
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.getElementById('tab-mysql').classList.toggle('active', tab==='mysql');
-  document.getElementById('tab-pg').classList.toggle('active',    tab==='pg');
-  renderSQL();
-}
-
-function copySQL() {
-  const sql = generateSQL(currentTab);
-  if (!sql.trim()) return;
-  navigator.clipboard.writeText(sql).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '✅ 복사됨';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '📋 복사'; btn.classList.remove('copied'); }, 1800);
-  });
-}
-
-// ── 초기 샘플 (worldpay) ──
-(function initSample() {
-  addTable();
-  tables[0].name = 'users';
-  tables[0].columns = [
-    { name:'id',         type:'UUID',      extra:'',     dflt:'',                  dfltCustom:'', pk:true,  nn:false },
-    { name:'email',      type:'VARCHAR',   extra:'255',  dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-    { name:'name',       type:'VARCHAR',   extra:'200',  dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-    { name:'created_at', type:'TIMESTAMP', extra:'',     dflt:'CURRENT_TIMESTAMP', dfltCustom:'', pk:false, nn:false },
-    { name:'password',   type:'VARCHAR',   extra:'255',  dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-  ];
-
-  addTable();
-  tables[1].name = 'transactions';
-  tables[1].columns = [
-    { name:'id',         type:'UUID',      extra:'',      dflt:'',                  dfltCustom:'', pk:true,  nn:false },
-    { name:'user_id',    type:'UUID',      extra:'',      dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-    { name:'amount',     type:'DECIMAL',   extra:'18,2',  dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-    { name:'currency',   type:'VARCHAR',   extra:'10',    dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-    { name:'merchant',   type:'VARCHAR',   extra:'200',   dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-    { name:'status',     type:'ENUM',      extra:"'completed','failed'", dflt:'',  dfltCustom:'', pk:false, nn:true  },
-    { name:'reference',  type:'VARCHAR',   extra:'50',    dflt:'',                  dfltCustom:'', pk:false, nn:true  },
-    { name:'created_at', type:'TIMESTAMP', extra:'',      dflt:'CURRENT_TIMESTAMP', dfltCustom:'', pk:false, nn:false },
-  ];
-
-  document.getElementById('dbName').value = 'worldpay';
-  renderTables();
-  renderSQL();
-})();
+/* ====================================================
+   INIT — empty state (no sample data)
+==================================================== */
+renderSQL();
 </script>
 </body>
 </html>

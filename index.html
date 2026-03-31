@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -44,7 +44,7 @@ pre{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:20
 .outact{position:absolute;top:10px;right:12px}
 .fkpanel{margin-top:6px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;grid-column:1/-1}
 .fkrow{display:flex;gap:6px;align-items:center}
-.fkrow label{font-size:.75rem;color:var(--mt);white-space:nowrap;min-width:70px}
+.fkrow label{font-size:.75rem;color:var(--mt);white-space:nowrap;min-width:80px}
 .kw{color:#c792ea;font-weight:700}.ty{color:#f78c6c}.cm{color:#546e7a;font-style:italic}.st{color:#c3e88d}
 </style>
 </head>
@@ -61,29 +61,29 @@ pre{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:20
 
 <div class="wrap">
   <div class="card">
-    <span class="lbl">데이터베이스 이름</span>
+    <span class="lbl">Database Name</span>
     <input type="text" id="dbName" placeholder="my_database" style="max-width:360px" oninput="renderSQL()">
   </div>
 
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <span style="font-size:1.05rem;font-weight:700">테이블 목록</span>
-      <button class="btn bp" onclick="addTable()">＋ 테이블 추가</button>
+      <span style="font-size:1.05rem;font-weight:700">Tables</span>
+      <button class="btn bp" onclick="addTable()">+ Add Table</button>
     </div>
-    <div class="tlist" id="tlist"><div class="empty">테이블을 추가해보세요 👆</div></div>
+    <div class="tlist" id="tlist"><div class="empty">Add a table to get started 👆</div></div>
   </div>
 
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:1.05rem;font-weight:700">생성된 SQL</span>
+      <span style="font-size:1.05rem;font-weight:700">Generated SQL</span>
       <div class="tabs">
         <button class="tab on" id="tab-mysql" onclick="switchTab('mysql')">MySQL</button>
         <button class="tab" id="tab-pg" onclick="switchTab('pg')">PostgreSQL</button>
       </div>
     </div>
     <div class="outwrap">
-      <pre id="sqlout"><span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span></pre>
-      <div class="outact"><button class="btn bc" id="copybtn" onclick="copySQL()">📋 복사</button></div>
+      <pre id="sqlout"><span class="cm">-- Add tables and columns to generate SQL</span></pre>
+      <div class="outact"><button class="btn bc" id="copybtn" onclick="copySQL()">📋 Copy</button></div>
     </div>
   </div>
 </div>
@@ -124,10 +124,10 @@ const TYPES=[
   {v:'SET',       lb:'SET(...)',                  x:1, ph:"'a','b'"},
 ];
 const DFLTS=[
-  {v:'',lb:'(없음)'},{v:'CURRENT_TIMESTAMP',lb:'CURRENT_TIMESTAMP'},
+  {v:'',lb:'(none)'},{v:'CURRENT_TIMESTAMP',lb:'CURRENT_TIMESTAMP'},
   {v:'NOW()',lb:'NOW()'},{v:'0',lb:'0'},{v:'1',lb:'1'},
-  {v:"''",lb:"'' (빈 문자열)"},{v:'NULL',lb:'NULL'},
-  {v:'TRUE',lb:'TRUE'},{v:'FALSE',lb:'FALSE'},{v:'__c__',lb:'직접 입력...'},
+  {v:"''",lb:"'' (empty string)"},{v:'NULL',lb:'NULL'},
+  {v:'TRUE',lb:'TRUE'},{v:'FALSE',lb:'FALSE'},{v:'__c__',lb:'Custom...'},
 ];
 const FKACT=['NO ACTION','RESTRICT','CASCADE','SET NULL','SET DEFAULT'];
 
@@ -184,17 +184,17 @@ function validate(type,raw){
   if(!t.x||!t.mv)return{ok:true};
   if(type==='DECIMAL'){
     const p=raw.split(',').map(s=>s.trim());
-    if(p.length!==2)return{ok:false,msg:'p,s 형식 (예: 10,2)'};
+    if(p.length!==2)return{ok:false,msg:'Format: p,s (e.g. 10,2)'};
     const[a,b]=p.map(Number);
-    if(isNaN(a)||isNaN(b))return{ok:false,msg:'숫자만 입력'};
-    if(a>t.mv[0])return{ok:false,msg:`precision 최대 ${t.mv[0]}`};
-    if(b>t.mv[1])return{ok:false,msg:`scale 최대 ${t.mv[1]}`};
+    if(isNaN(a)||isNaN(b))return{ok:false,msg:'Numbers only'};
+    if(a>t.mv[0])return{ok:false,msg:`precision max ${t.mv[0]}`};
+    if(b>t.mv[1])return{ok:false,msg:`scale max ${t.mv[1]}`};
     if(b>a)return{ok:false,msg:'scale ≤ precision'};
     return{ok:true};
   }
   const n=Number(raw);
-  if(!raw||isNaN(n)||n<1)return{ok:false,msg:'1 이상 입력'};
-  if(n>t.mv)return{ok:false,msg:`최대 ${t.mv.toLocaleString()}`};
+  if(!raw||isNaN(n)||n<1)return{ok:false,msg:'Enter a number ≥ 1'};
+  if(n>t.mv)return{ok:false,msg:`Max ${t.mv.toLocaleString()}`};
   return{ok:true};
 }
 
@@ -206,7 +206,7 @@ function selOpts(arr,valFn,lbFn,cur){
 
 function redraw(){
   const list=document.getElementById('tlist');
-  if(!tables.length){list.innerHTML='<div class="empty">테이블을 추가해보세요 👆</div>';renderSQL();return;}
+  if(!tables.length){list.innerHTML='<div class="empty">Add a table to get started 👆</div>';renderSQL();return;}
 
   list.innerHTML=tables.map(t=>{
     const colRows=t.columns.map(col=>{
@@ -226,21 +226,21 @@ function redraw(){
   </div>
   <div style="display:flex;gap:4px">
     <select class="cd" style="flex:1" onchange="onInput()">${selOpts(DFLTS,x=>x.v,x=>x.lb,col.dflt)}</select>
-    <input type="text" class="cdc" value="${esc(col.dc||'')}" placeholder="값" style="width:72px;${isC?'':'display:none'}" oninput="onInput()">
+    <input type="text" class="cdc" value="${esc(col.dc||'')}" placeholder="value" style="width:72px;${isC?'':'display:none'}" oninput="onInput()">
   </div>
   <div class="cbw"><input type="checkbox" class="pk" ${col.pk?'checked':''} onchange="onInput()"></div>
   <div class="cbw"><input type="checkbox" class="nn" ${col.nn?'checked':''} onchange="onInput()"></div>
   <div class="cbw"><input type="checkbox" class="fk" ${col.fk?'checked':''} onchange="onFKToggle(${t.id},${col.id},this.checked)"></div>
   <button class="btn bd2" style="margin-top:8px;padding:4px 7px" onclick="delCol(${t.id},${col.id})">✕</button>
   ${col.fk?`<div class="fkpanel">
-    <div class="fkrow"><label>참조 테이블</label>
+    <div class="fkrow"><label>Ref. Table</label>
       <select class="ft" style="flex:1" onchange="onFKTable(${t.id},${col.id},this.value)">
-        <option value="">-- 테이블 선택 --</option>
+        <option value="">-- Select table --</option>
         ${otherT.map(o=>`<option value="${o.id}"${String(col.ft)===String(o.id)?' selected':''}>${esc(o.name||'table_'+o.id)}</option>`).join('')}
       </select></div>
-    <div class="fkrow"><label>참조 콼럼</label>
+    <div class="fkrow"><label>Ref. Column</label>
       <select class="fc" style="flex:1" onchange="onInput()">
-        <option value="">-- 콼럼 선택 --</option>
+        <option value="">-- Select column --</option>
         ${refT?refT.columns.map(rc=>`<option value="${esc(rc.name)}"${col.fc===rc.name?' selected':''}>${esc(rc.name||'col_'+rc.id)}</option>`).join(''):''}
       </select></div>
     <div class="fkrow"><label>ON DELETE</label>
@@ -257,11 +257,11 @@ function redraw(){
         style="background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--tx);font-size:1rem;font-weight:700;width:220px;outline:none"
         oninput="onInput()">
     </div>
-    <button class="btn bd2" onclick="delTable(${t.id})">✕ 삭제</button>
+    <button class="btn bd2" onclick="delTable(${t.id})">✕ Remove</button>
   </div>
   <div class="cg" style="margin-bottom:4px">
-    <div class="ch">콼럼 이름</div><div class="ch">타입</div><div class="ch">크기/값</div>
-    <div class="ch">DEFAULT</div>
+    <div class="ch">Column Name</div><div class="ch">Type</div><div class="ch">Size / Value</div>
+    <div class="ch">Default</div>
     <div class="ch cc" title="Primary Key">PK</div>
     <div class="ch cc" title="NOT NULL">NN</div>
     <div class="ch cc" title="Foreign Key">FK</div>
@@ -269,7 +269,7 @@ function redraw(){
   </div>
   ${colRows}
   <div style="margin-top:12px">
-    <button class="btn bg" style="font-size:.82rem;padding:7px 14px" onclick="addCol(${t.id})">＋ 콼럼 추가</button>
+    <button class="btn bg" style="font-size:.82rem;padding:7px 14px" onclick="addCol(${t.id})">+ Add Column</button>
   </div>
 </div>`;
   }).join('');
@@ -337,8 +337,8 @@ function copySQL(){
   if(!sql)return;
   navigator.clipboard.writeText(sql).then(()=>{
     const b=document.getElementById('copybtn');
-    b.textContent='✅ 복사됨'; b.classList.add('ok');
-    setTimeout(()=>{b.textContent='📋 복사';b.classList.remove('ok');},1800);
+    b.textContent='✅ Copied!'; b.classList.add('ok');
+    setTimeout(()=>{b.textContent='📋 Copy';b.classList.remove('ok');},1800);
   });
 }
 
@@ -414,7 +414,7 @@ function buildSQL(){
 function renderSQL(){
   const sql=buildSQL();
   const pre=document.getElementById('sqlout');
-  if(!sql){pre.innerHTML='<span class="cm">-- 테이블과 콼럼을 추가하면 SQL이 생성됩니다</span>';return;}
+  if(!sql){pre.innerHTML='<span class="cm">-- Add tables and columns to generate SQL</span>';return;}
   pre.innerHTML=hl(sql);
 }
 

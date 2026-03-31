@@ -23,53 +23,41 @@
     header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
     header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
     header span { font-size: 0.75rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 24px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; display: flex; flex-direction: column; gap: 24px; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
-    label { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
-    input[type=text], select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text); font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+    label { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    input[type=text], select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; color: var(--text); font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
     input[type=text]:focus, select:focus { border-color: var(--accent); }
-    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .table-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1rem; }
-    .table-title input { font-size: 1rem; font-weight: 600; width: 220px; }
+    input[type=text]:disabled { opacity: 0.3; cursor: not-allowed; }
     .btn { border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; display: inline-flex; align-items: center; gap: 6px; }
     .btn:hover { opacity: 0.85; transform: translateY(-1px); }
     .btn-primary { background: var(--accent); color: #fff; }
-    .btn-success { background: var(--success); color: #0f1117; }
     .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; font-size: 0.8rem; }
     .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
     .btn-copy { background: var(--surface2); border: 1px solid var(--border); color: var(--accent); padding: 6px 14px; font-size: 0.82rem; }
     .btn-copy.copied { background: var(--success); color: #0f1117; border-color: var(--success); }
-    .columns-grid { display: grid; grid-template-columns: 2fr 1.4fr 0.8fr 0.7fr auto; gap: 8px; align-items: center; }
-    .columns-grid .col-header { font-size: 0.75rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
-    .col-row { display: contents; }
-    .col-row input, .col-row select { font-size: 0.9rem; padding: 8px 10px; }
-    .type-extra { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; color: var(--text); font-size: 0.9rem; outline: none; width: 100%; }
-    .type-extra:disabled { opacity: 0.3; cursor: not-allowed; }
-    .type-extra:focus { border-color: var(--accent); }
-    .checkbox-wrap { display: flex; justify-content: center; }
-    input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
-    .add-col-row { margin-top: 12px; }
+    /* Column grid: name | type | extra | default | PK | NN | del */
+    .col-grid { display: grid; grid-template-columns: 1.6fr 1.5fr 0.9fr 1.2fr 2.4rem 2.4rem 2rem; gap: 7px; align-items: center; }
+    .col-hdr { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); text-align: center; }
+    .col-hdr:first-child { text-align: left; }
+    .col-hdr:nth-child(2), .col-hdr:nth-child(3), .col-hdr:nth-child(4) { text-align: left; }
+    .col-grid input, .col-grid select { font-size: 0.88rem; padding: 7px 9px; }
+    .cb-wrap { display: flex; justify-content: center; align-items: center; }
+    input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
     .tables-list { display: flex; flex-direction: column; gap: 20px; }
-    .output-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .output-tabs { display: flex; gap: 8px; }
     .tab { padding: 7px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all 0.15s; }
     .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .output-area { position: relative; }
-    pre { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; font-size: 0.88rem; line-height: 1.7; overflow-x: auto; white-space: pre; color: #a9c5e8; min-height: 100px; font-family: 'Fira Code', 'Cascadia Code', monospace; }
-    .output-actions { position: absolute; top: 10px; right: 12px; display: flex; gap: 8px; }
-    .kw { color: #c792ea; font-weight: 700; }
-    .tb { color: #82aaff; }
-    .col { color: #c3e88d; }
-    .ty { color: #f78c6c; }
-    .cm { color: #546e7a; font-style: italic; }
-    .pk { color: var(--accent2); }
+    .output-area { position: relative; margin-top: 12px; }
+    pre { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 60px 20px 20px; font-size: 0.88rem; line-height: 1.8; overflow-x: auto; white-space: pre; color: #a9c5e8; min-height: 120px; font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace; }
+    .output-actions { position: absolute; top: 10px; right: 12px; }
+    .kw  { color: #c792ea; font-weight: 700; }
+    .ty  { color: #f78c6c; }
+    .id  { color: #82aaff; }
+    .cm  { color: #546e7a; font-style: italic; }
+    .st  { color: #c3e88d; }
+    .nm  { color: #ffcb6b; }
     .empty-state { text-align: center; padding: 40px; color: var(--muted); font-size: 0.95rem; }
-    .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
-    .section-row { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
-    .section-row > div { flex: 1; min-width: 200px; }
-    @media (max-width: 700px) {
-      .columns-grid { grid-template-columns: 1fr 1fr; }
-      .col-header:nth-child(n+3), .col-row > *:nth-child(n+3) { display: none; }
-    }
   </style>
 </head>
 <body>
@@ -82,12 +70,8 @@
 <div class="container">
   <!-- DB Name -->
   <div class="card">
-    <div class="section-row">
-      <div>
-        <label>데이터베이스 이름</label>
-        <input type="text" id="dbName" placeholder="my_database" oninput="renderSQL()" />
-      </div>
-    </div>
+    <label>데이터베이스 이름</label>
+    <input type="text" id="dbName" placeholder="worldpay" oninput="renderSQL()" style="max-width:360px" />
   </div>
 
   <!-- Tables -->
@@ -103,7 +87,7 @@
 
   <!-- Output -->
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
       <div style="font-size:1.05rem;font-weight:700">생성된 SQL</div>
       <div class="output-tabs">
         <button class="tab active" id="tab-mysql" onclick="switchTab('mysql')">MySQL</button>
@@ -121,174 +105,191 @@
 
 <script>
 const TYPES = [
-  { label: 'INT', value: 'INT', hasExtra: false },
-  { label: 'BIGINT', value: 'BIGINT', hasExtra: false },
-  { label: 'SMALLINT', value: 'SMALLINT', hasExtra: false },
-  { label: 'TINYINT', value: 'TINYINT', hasExtra: false },
-  { label: 'FLOAT', value: 'FLOAT', hasExtra: false },
-  { label: 'DOUBLE', value: 'DOUBLE', hasExtra: false },
-  { label: 'DECIMAL(p,s)', value: 'DECIMAL', hasExtra: true, placeholder: '10,2' },
-  { label: 'VARCHAR(n)', value: 'VARCHAR', hasExtra: true, placeholder: '255' },
-  { label: 'CHAR(n)', value: 'CHAR', hasExtra: true, placeholder: '10' },
-  { label: 'TEXT', value: 'TEXT', hasExtra: false },
-  { label: 'LONGTEXT / TEXT', value: 'LONGTEXT', hasExtra: false },
-  { label: 'BOOLEAN', value: 'BOOLEAN', hasExtra: false },
-  { label: 'DATE', value: 'DATE', hasExtra: false },
-  { label: 'DATETIME / TIMESTAMP', value: 'DATETIME', hasExtra: false },
-  { label: 'TIMESTAMP', value: 'TIMESTAMP', hasExtra: false },
-  { label: 'TIME', value: 'TIME', hasExtra: false },
-  { label: 'JSON', value: 'JSON', hasExtra: false },
-  { label: 'BLOB', value: 'BLOB', hasExtra: false },
-  { label: 'UUID', value: 'UUID', hasExtra: false },
-  { label: 'ENUM(...)', value: 'ENUM', hasExtra: true, placeholder: "'a','b','c'" },
-  { label: 'SERIAL / AUTO_INCREMENT', value: 'SERIAL', hasExtra: false },
+  { v:'INT',        label:'INT',                    hasExtra:false },
+  { v:'BIGINT',     label:'BIGINT',                 hasExtra:false },
+  { v:'SMALLINT',   label:'SMALLINT',               hasExtra:false },
+  { v:'TINYINT',    label:'TINYINT',                hasExtra:false },
+  { v:'FLOAT',      label:'FLOAT',                  hasExtra:false },
+  { v:'DOUBLE',     label:'DOUBLE',                 hasExtra:false },
+  { v:'DECIMAL',    label:'DECIMAL(p,s)',            hasExtra:true,  ph:'18,2' },
+  { v:'VARCHAR',    label:'VARCHAR(n)',              hasExtra:true,  ph:'255'  },
+  { v:'CHAR',       label:'CHAR(n)',                 hasExtra:true,  ph:'10'   },
+  { v:'TEXT',       label:'TEXT',                   hasExtra:false },
+  { v:'LONGTEXT',   label:'LONGTEXT',               hasExtra:false },
+  { v:'BOOLEAN',    label:'BOOLEAN',                hasExtra:false },
+  { v:'DATE',       label:'DATE',                   hasExtra:false },
+  { v:'TIMESTAMP',  label:'TIMESTAMP',              hasExtra:false },
+  { v:'DATETIME',   label:'DATETIME',               hasExtra:false },
+  { v:'TIME',       label:'TIME',                   hasExtra:false },
+  { v:'JSON',       label:'JSON',                   hasExtra:false },
+  { v:'BLOB',       label:'BLOB',                   hasExtra:false },
+  { v:'UUID',       label:'UUID / CHAR(36)',         hasExtra:false },
+  { v:'ENUM',       label:'ENUM(...)',               hasExtra:true,  ph:"'a','b','c'" },
+  { v:'SERIAL',     label:'SERIAL / AUTO_INCREMENT', hasExtra:false },
+];
+
+const DEFAULTS = [
+  { v:'',                    label:'(없음)' },
+  { v:'CURRENT_TIMESTAMP',   label:'CURRENT_TIMESTAMP' },
+  { v:'NOW()',               label:'NOW()' },
+  { v:'0',                   label:'0' },
+  { v:'1',                   label:'1' },
+  { v:"''",                  label:"'' (빈 문자열)" },
+  { v:'NULL',                label:'NULL' },
+  { v:'__custom__',          label:'직접 입력...' },
 ];
 
 let tables = [];
 let currentTab = 'mysql';
-let tableId = 0;
+let tid = 0;
 
 function addTable() {
-  const id = ++tableId;
+  const id = ++tid;
   tables.push({ id, name: `table_${id}`, columns: [] });
   renderTables();
   renderSQL();
 }
-
 function removeTable(id) {
   tables = tables.filter(t => t.id !== id);
-  renderTables();
-  renderSQL();
+  renderTables(); renderSQL();
 }
-
-function addColumn(tableId) {
-  const t = tables.find(t => t.id === tableId);
+function addColumn(tid) {
+  const t = tables.find(t => t.id === tid);
   if (!t) return;
-  t.columns.push({ name: '', type: 'VARCHAR', extra: '255', pk: false, notNull: false });
-  renderTables();
-  renderSQL();
+  t.columns.push({ name:'', type:'VARCHAR', extra:'255', dflt:'', dfltCustom:'', pk:false, nn:false });
+  renderTables(); renderSQL();
 }
-
-function removeColumn(tableId, idx) {
-  const t = tables.find(t => t.id === tableId);
+function removeColumn(tid, idx) {
+  const t = tables.find(t => t.id === tid);
   if (!t) return;
   t.columns.splice(idx, 1);
-  renderTables();
+  renderTables(); renderSQL();
+}
+function setField(tid, idx, field, val) {
+  const t = tables.find(t => t.id === tid);
+  if (!t) return;
+  if (idx === -1) { t.name = val; renderSQL(); return; }
+  t.columns[idx][field] = val;
+  if (field === 'type') {
+    const td = TYPES.find(x => x.v === val);
+    t.columns[idx].extra = td?.hasExtra ? (td.ph || '') : '';
+    renderTables();
+  }
   renderSQL();
 }
 
-function updateField(tableId, idx, field, value) {
-  const t = tables.find(t => t.id === tableId);
-  if (!t) return;
-  if (idx === -1) { t.name = value; }
-  else {
-    t.columns[idx][field] = field === 'pk' || field === 'notNull' ? value : value;
-    if (field === 'type') {
-      const typeDef = TYPES.find(tp => tp.value === value);
-      t.columns[idx].extra = typeDef?.hasExtra ? (typeDef.placeholder || '') : '';
-      renderTables(); // re-render to update extra input state
-    }
-  }
-  renderSQL();
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function renderTables() {
   const container = document.getElementById('tablesList');
   const empty = document.getElementById('emptyState');
   if (tables.length === 0) {
-    container.innerHTML = '';
-    container.appendChild(empty);
-    empty.style.display = 'block';
-    return;
+    container.innerHTML = ''; container.appendChild(empty); empty.style.display='block'; return;
   }
   empty.style.display = 'none';
-  container.innerHTML = tables.map(t => `
-    <div class="card" style="background:var(--surface2);border-color:var(--border);">
-      <div class="table-header">
-        <div class="table-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="5" rx="1" fill="#6c8af7"/><rect x="3" y="10" width="18" height="5" rx="1" fill="#a78bfa" opacity="0.7"/><rect x="3" y="17" width="18" height="4" rx="1" fill="#34d399" opacity="0.5"/></svg>
-          <input type="text" value="${escHtml(t.name)}" placeholder="table_name"
-            style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:1rem;font-weight:600;width:220px;outline:none;"
-            oninput="updateField(${t.id},-1,'name',this.value)" />
+  container.innerHTML = tables.map(t => {
+    const colRows = t.columns.map((col, idx) => {
+      const td = TYPES.find(x => x.v === col.type) || {};
+      const hasExtra = td.hasExtra || false;
+      const dfltIsCustom = col.dflt === '__custom__';
+      return `
+      <div class="col-grid" style="margin-top:8px">
+        <input type="text" value="${esc(col.name)}" placeholder="column_name"
+          oninput="setField(${t.id},${idx},'name',this.value)" />
+        <select onchange="setField(${t.id},${idx},'type',this.value)">
+          ${TYPES.map(x=>`<option value="${x.v}" ${col.type===x.v?'selected':''}>${esc(x.label)}</option>`).join('')}
+        </select>
+        <input type="text" value="${esc(col.extra||'')}" placeholder="${hasExtra?esc(td.ph||''):'—'}"
+          ${hasExtra?'':'disabled'}
+          oninput="setField(${t.id},${idx},'extra',this.value)" />
+        <div style="display:flex;gap:4px;align-items:center">
+          <select style="flex:1" onchange="setField(${t.id},${idx},'dflt',this.value)">
+            ${DEFAULTS.map(d=>`<option value="${esc(d.v)}" ${col.dflt===d.v?'selected':''}>${esc(d.label)}</option>`).join('')}
+          </select>
+          <input type="text" value="${esc(col.dfltCustom||'')}" placeholder="값 입력"
+            style="width:80px;${dfltIsCustom?'':'display:none'}"
+            oninput="setField(${t.id},${idx},'dfltCustom',this.value)" />
+        </div>
+        <div class="cb-wrap"><input type="checkbox" ${col.pk?'checked':''} onchange="setField(${t.id},${idx},'pk',this.checked)" /></div>
+        <div class="cb-wrap"><input type="checkbox" ${col.nn?'checked':''} onchange="setField(${t.id},${idx},'nn',this.checked)" /></div>
+        <button class="btn btn-danger" style="padding:4px 7px;font-size:0.8rem" onclick="removeColumn(${t.id},${idx})">✕</button>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="card" style="background:var(--surface2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="5" rx="1" fill="#6c8af7"/><rect x="3" y="10" width="18" height="5" rx="1" fill="#a78bfa" opacity="0.7"/><rect x="3" y="17" width="18" height="4" rx="1" fill="#34d399" opacity="0.5"/></svg>
+          <input type="text" value="${esc(t.name)}" placeholder="table_name"
+            style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:1rem;font-weight:700;width:200px;outline:none;"
+            oninput="setField(${t.id},-1,'name',this.value)" />
         </div>
         <button class="btn btn-danger" onclick="removeTable(${t.id})">✕ 삭제</button>
       </div>
-      <div class="columns-grid">
-        <div class="col-header">컬럼 이름</div>
-        <div class="col-header">타입</div>
-        <div class="col-header">크기/값</div>
-        <div class="col-header" style="text-align:center">NOT NULL</div>
-        <div class="col-header"></div>
+      <div class="col-grid" style="margin-bottom:4px">
+        <div class="col-hdr">컬럼 이름</div>
+        <div class="col-hdr">타입</div>
+        <div class="col-hdr">크기/값</div>
+        <div class="col-hdr">DEFAULT</div>
+        <div class="col-hdr" title="Primary Key">PK</div>
+        <div class="col-hdr" title="NOT NULL">NN</div>
+        <div></div>
       </div>
-      ${t.columns.map((col, idx) => {
-        const typeDef = TYPES.find(tp => tp.value === col.type) || {};
-        const hasExtra = typeDef.hasExtra || false;
-        return `
-        <div class="columns-grid" style="margin-top:8px">
-          <input type="text" value="${escHtml(col.name)}" placeholder="column_name"
-            oninput="updateField(${t.id},${idx},'name',this.value)" />
-          <select onchange="updateField(${t.id},${idx},'type',this.value)">
-            ${TYPES.map(tp => `<option value="${tp.value}" ${col.type===tp.value?'selected':''}>${tp.label}</option>`).join('')}
-          </select>
-          <input type="text" class="type-extra" value="${escHtml(col.extra||'')}" 
-            placeholder="${hasExtra?(typeDef.placeholder||''):'—'}" 
-            ${hasExtra ? '' : 'disabled'}
-            oninput="updateField(${t.id},${idx},'extra',this.value)" />
-          <div class="checkbox-wrap"><input type="checkbox" ${col.notNull?'checked':''} onchange="updateField(${t.id},${idx},'notNull',this.checked)" /></div>
-          <button class="btn btn-danger" onclick="removeColumn(${t.id},${idx})">✕</button>
-        </div>`;
-      }).join('')}
-      <div class="add-col-row">
-        <button class="btn btn-ghost" style="font-size:0.82rem;padding:7px 14px;" onclick="addColumn(${t.id})">＋ 컬럼 추가</button>
+      ${colRows}
+      <div style="margin-top:12px">
+        <button class="btn btn-ghost" style="font-size:0.82rem;padding:7px 14px" onclick="addColumn(${t.id})">＋ 컬럼 추가</button>
       </div>
-    </div>
-  `).join('');
-}
-
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    </div>`;
+  }).join('');
 }
 
 function resolveType(col, dialect) {
-  const { type, extra } = col;
-  const e = (extra || '').trim();
+  const { type: tp, extra: e = '' } = col;
+  const ex = e.trim();
   if (dialect === 'mysql') {
-    if (type === 'SERIAL') return 'INT AUTO_INCREMENT';
-    if (type === 'BOOLEAN') return 'TINYINT(1)';
-    if (type === 'UUID') return 'CHAR(36)';
-    if (type === 'DATETIME') return 'DATETIME';
-    if (type === 'LONGTEXT') return 'LONGTEXT';
-    if (type === 'JSON') return 'JSON';
-    if ((type === 'VARCHAR' || type === 'CHAR') && e) return `${type}(${e})`;
-    if (type === 'DECIMAL' && e) return `DECIMAL(${e})`;
-    if (type === 'ENUM' && e) return `ENUM(${e})`;
-    return type;
-  } else { // pg
-    if (type === 'SERIAL') return 'SERIAL';
-    if (type === 'BOOLEAN') return 'BOOLEAN';
-    if (type === 'UUID') return 'UUID';
-    if (type === 'DATETIME') return 'TIMESTAMP';
-    if (type === 'LONGTEXT') return 'TEXT';
-    if (type === 'TINYINT') return 'SMALLINT';
-    if (type === 'DOUBLE') return 'DOUBLE PRECISION';
-    if (type === 'BLOB') return 'BYTEA';
-    if (type === 'ENUM' && e) return `VARCHAR(50) CHECK ("${col.name}" IN (${e}))`;
-    if ((type === 'VARCHAR' || type === 'CHAR') && e) return `${type}(${e})`;
-    if (type === 'DECIMAL' && e) return `NUMERIC(${e})`;
-    return type;
+    if (tp === 'SERIAL')    return 'INT AUTO_INCREMENT';
+    if (tp === 'BOOLEAN')   return 'TINYINT(1)';
+    if (tp === 'UUID')      return 'CHAR(36)';
+    if (tp === 'LONGTEXT')  return 'LONGTEXT';
+    if (tp === 'DATETIME')  return 'DATETIME';
+    if (tp === 'DOUBLE')    return 'DOUBLE';
+    if ((tp==='VARCHAR'||tp==='CHAR') && ex) return `${tp}(${ex})`;
+    if (tp==='DECIMAL' && ex) return `DECIMAL(${ex})`;
+    if (tp==='ENUM' && ex)    return `ENUM(${ex})`;
+    return tp;
+  } else {
+    if (tp === 'SERIAL')    return 'SERIAL';
+    if (tp === 'BOOLEAN')   return 'BOOLEAN';
+    if (tp === 'UUID')      return 'UUID';
+    if (tp === 'DATETIME')  return 'TIMESTAMP';
+    if (tp === 'LONGTEXT')  return 'TEXT';
+    if (tp === 'TINYINT')   return 'SMALLINT';
+    if (tp === 'DOUBLE')    return 'DOUBLE PRECISION';
+    if (tp === 'BLOB')      return 'BYTEA';
+    if (tp === 'ENUM' && ex) return `VARCHAR(50) CHECK (${col.name} IN (${ex}))`;
+    if ((tp==='VARCHAR'||tp==='CHAR') && ex) return `${tp}(${ex})`;
+    if (tp==='DECIMAL' && ex) return `NUMERIC(${ex})`;
+    return tp;
   }
 }
 
+function getDefault(col) {
+  if (col.dflt === '') return '';
+  if (col.dflt === '__custom__') return col.dfltCustom || '';
+  return col.dflt;
+}
+
 function generateSQL(dialect) {
-  const dbName = (document.getElementById('dbName').value || '').trim();
+  const dbName = document.getElementById('dbName').value.trim();
   const lines = [];
-  
+
   if (dbName) {
     if (dialect === 'mysql') {
-      lines.push(`CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);
-      lines.push(`USE \`${dbName}\`;`);
+      lines.push(`USE ${dbName};`);
     } else {
-      lines.push(`CREATE DATABASE IF NOT EXISTS "${dbName}";`);
       lines.push(`\\c ${dbName}`);
     }
     lines.push('');
@@ -298,51 +299,41 @@ function generateSQL(dialect) {
 
   tables.forEach((t, ti) => {
     const tName = t.name || `table_${ti+1}`;
-    const quote = dialect === 'mysql' ? '`' : '"';
-    const pkCols = t.columns.filter(c => c.type === 'SERIAL');
-    
-    lines.push(`-- Table: ${tName}`);
+
+    // find PK columns
+    const pkCols = t.columns.filter(c => c.pk || c.type === 'SERIAL');
+
     if (dialect === 'mysql') {
-      lines.push(`CREATE TABLE IF NOT EXISTS \`${tName}\` (`);
+      lines.push(`CREATE TABLE ${tName} (`);
     } else {
-      lines.push(`CREATE TABLE IF NOT EXISTS "${tName}" (`);
+      lines.push(`CREATE TABLE ${tName} (`);
     }
 
-    const colDefs = [];
-    let firstSerial = null;
+    // calc max col name length for alignment
+    const maxLen = Math.max(4, ...t.columns.map(c => (c.name||'col').length));
+
+    const defs = [];
     t.columns.forEach((col, ci) => {
       const colName = col.name || `col_${ci+1}`;
       const resolved = resolveType(col, dialect);
-      let def = `  ${quote}${colName}${quote} ${resolved}`;
-      if (col.notNull && col.type !== 'SERIAL') def += ' NOT NULL';
-      if (col.type === 'SERIAL' && dialect === 'mysql' && !firstSerial) {
-        firstSerial = colName;
-      }
-      colDefs.push(def);
+      const dflt = getDefault(col);
+      let def = `    ${colName.padEnd(maxLen + 1)} ${resolved}`;
+      if (col.nn && col.type !== 'SERIAL') def += ' NOT NULL';
+      if (dflt) def += ` DEFAULT ${dflt}`;
+      defs.push(def);
     });
 
-    // PK detection: first SERIAL col or first col named id/ID
-    let pkCol = null;
-    if (dialect === 'mysql' && firstSerial) pkCol = firstSerial;
-    else if (dialect === 'pg') {
-      const s = t.columns.find(c => c.type === 'SERIAL');
-      if (s) pkCol = s.name || 'id';
-    }
-    if (!pkCol) {
-      const idCol = t.columns.find(c => /^id$/i.test(c.name));
-      if (idCol) pkCol = idCol.name;
+    // PK constraint at end
+    if (pkCols.length > 0) {
+      const pkNames = pkCols.map(c => c.name || 'id').join(', ');
+      defs.push(`    PRIMARY KEY (${pkNames})`);
     }
 
-    if (pkCol) {
-      const pkName = (dialect === 'mysql') ? `pk_${tName}` : `pk_${tName}`;
-      if (dialect === 'mysql') {
-        colDefs.push(`  PRIMARY KEY (\`${pkCol}\`)`);
-      } else {
-        colDefs.push(`  CONSTRAINT pk_${tName} PRIMARY KEY ("${pkCol}")`);
-      }
-    }
+    // FK constraints
+    // (future: FK support)
 
-    lines.push(colDefs.join(',\n'));
+    lines.push(defs.join(',\n'));
+
     if (dialect === 'mysql') {
       lines.push(`) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
     } else {
@@ -354,22 +345,27 @@ function generateSQL(dialect) {
   return lines.join('\n');
 }
 
+const KW = ['CREATE','TABLE','USE','PRIMARY','KEY','ENGINE','DEFAULT','CHARSET','NOT','NULL','AUTO_INCREMENT','SERIAL','CONSTRAINT','CHECK','IN','UNIQUE','REFERENCES','FOREIGN','ON','DELETE','CASCADE'];
+const TY = ['INT','BIGINT','SMALLINT','TINYINT','FLOAT','DOUBLE','DOUBLE PRECISION','DECIMAL','NUMERIC','VARCHAR','CHAR','TEXT','LONGTEXT','BOOLEAN','DATE','DATETIME','TIMESTAMP','TIME','JSON','BLOB','UUID','BYTEA','ENUM','SERIAL'];
+
 function highlight(sql) {
-  const keywords = ['CREATE','DATABASE','IF','NOT','EXISTS','USE','TABLE','PRIMARY','KEY','CONSTRAINT','ENGINE','DEFAULT','CHARSET','NULL','AUTO_INCREMENT','SERIAL','CHECK','IN'];
-  let h = escHtml(sql);
-  keywords.forEach(kw => {
-    h = h.replace(new RegExp(`\\b(${kw})\\b`, 'g'), `<span class="kw">$1</span>`);
-  });
-  // types
-  const types = ['INT','BIGINT','SMALLINT','TINYINT','FLOAT','DOUBLE','DECIMAL','VARCHAR','CHAR','TEXT','LONGTEXT','BOOLEAN','DATE','DATETIME','TIMESTAMP','TIME','JSON','BLOB','UUID','ENUM','NUMERIC','BYTEA','SMALLINT','DOUBLE PRECISION','SERIAL'];
-  types.forEach(tp => {
-    h = h.replace(new RegExp(`\\b(${tp})\\b`, 'g'), `<span class="ty">$1</span>`);
-  });
+  let h = sql
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // strings
+  h = h.replace(/('(?:[^'\\]|\\.)*')/g, '<span class="st">$1</span>');
   // comments
-  h = h.replace(/(-- [^\n]*)/g, '<span class="cm">$1</span>');
-  // backtick/quote identifiers
-  h = h.replace(/(`[^`]+`)/g, '<span class="tb">$1</span>');
-  h = h.replace(/("[^"]+")/g, '<span class="col">$1</span>');
+  h = h.replace(/(--[^\n]*)/g, '<span class="cm">$1</span>');
+
+  // types (before keywords to avoid double-wrap issues)
+  TY.slice().sort((a,b)=>b.length-a.length).forEach(tp => {
+    h = h.replace(new RegExp(`(?<![\\w>])(${tp})(?![\\w<])`, 'g'), '<span class="ty">$1</span>');
+  });
+  // keywords
+  KW.forEach(kw => {
+    h = h.replace(new RegExp(`(?<![\\w>])(${kw})(?![\\w<])`, 'g'), '<span class="kw">$1</span>');
+  });
+
   return h;
 }
 
@@ -401,18 +397,41 @@ function copySQL() {
   });
 }
 
-// Init with one sample table
-addTable();
-const t = tables[0];
-t.name = 'users';
-t.columns.push(
-  { name: 'id', type: 'SERIAL', extra: '', pk: true, notNull: true },
-  { name: 'username', type: 'VARCHAR', extra: '100', pk: false, notNull: true },
-  { name: 'email', type: 'VARCHAR', extra: '255', pk: false, notNull: true },
-  { name: 'created_at', type: 'DATETIME', extra: '', pk: false, notNull: false }
-);
-renderTables();
-renderSQL();
+// ── Init: worldpay sample ──
+function initSample() {
+  // users table
+  addTable();
+  const u = tables[0];
+  u.name = 'users';
+  u.columns = [
+    { name:'id',         type:'UUID',      extra:'',    dflt:'',                   dfltCustom:'', pk:true,  nn:true  },
+    { name:'email',      type:'VARCHAR',   extra:'255', dflt:'',                   dfltCustom:'', pk:false, nn:true  },
+    { name:'name',       type:'VARCHAR',   extra:'200', dflt:'',                   dfltCustom:'', pk:false, nn:true  },
+    { name:'created_at', type:'TIMESTAMP', extra:'',    dflt:'CURRENT_TIMESTAMP',  dfltCustom:'', pk:false, nn:false },
+    { name:'password',   type:'VARCHAR',   extra:'255', dflt:'',                   dfltCustom:'', pk:false, nn:true  },
+  ];
+
+  // transactions table
+  addTable();
+  const tx = tables[1];
+  tx.name = 'transactions';
+  tx.columns = [
+    { name:'id',         type:'UUID',      extra:'',    dflt:'',                  dfltCustom:'', pk:true,  nn:true  },
+    { name:'user_id',    type:'UUID',      extra:'',    dflt:'',                  dfltCustom:'', pk:false, nn:true  },
+    { name:'amount',     type:'DECIMAL',   extra:'18,2',dflt:'',                  dfltCustom:'', pk:false, nn:true  },
+    { name:'currency',   type:'VARCHAR',   extra:'10',  dflt:'',                  dfltCustom:'', pk:false, nn:true  },
+    { name:'merchant',   type:'VARCHAR',   extra:'200', dflt:'',                  dfltCustom:'', pk:false, nn:true  },
+    { name:'status',     type:'ENUM',      extra:"'completed','failed'", dflt:'', dfltCustom:'', pk:false, nn:true  },
+    { name:'reference',  type:'VARCHAR',   extra:'50',  dflt:'',                  dfltCustom:'', pk:false, nn:true  },
+    { name:'created_at', type:'TIMESTAMP', extra:'',    dflt:'CURRENT_TIMESTAMP', dfltCustom:'', pk:false, nn:false },
+  ];
+
+  document.getElementById('dbName').value = 'worldpay';
+  renderTables();
+  renderSQL();
+}
+
+initSample();
 </script>
 </body>
 </html>

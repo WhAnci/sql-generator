@@ -29,7 +29,6 @@ input.bad{border-color:var(--dn)!important}
 .bd2{background:transparent;border:1px solid var(--dn);color:var(--dn);padding:5px 10px;font-size:.8rem}
 .bc{background:var(--s2);border:1px solid var(--bd);color:var(--ac);padding:6px 14px;font-size:.82rem}
 .bc.ok{background:var(--ok);color:#0f1117;border-color:var(--ok)}
-/* col grid: name | type | size | default | PK | NN | FK | del */
 .cg{display:grid;grid-template-columns:1.5fr 1.6fr .85fr 1.3fr 2.6rem 2.6rem 2.6rem 2rem;gap:7px;align-items:start;margin-top:8px}
 .ch{font-size:.72rem;color:var(--mt);font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
 .cc{text-align:center}
@@ -156,7 +155,6 @@ function delCol(tid,cid){
   if(t){t.columns=t.columns.filter(c=>c.id!==cid);redraw();}
 }
 
-// 입력 토크단: DOM 직접 읽기
 function sync(){
   tables.forEach(t=>{
     const card=document.querySelector(`[data-tid="${t.id}"]`);
@@ -216,7 +214,6 @@ function redraw(){
       const hasX=!!tp.x;
       const isC=col.dflt==='__c__';
       const vld=hasX?validate(col.type,col.extra||''):{ok:true};
-
       const otherT=tables.filter(o=>o.id!==t.id);
       const refT=tables.find(o=>String(o.id)===String(col.ft));
 
@@ -345,7 +342,6 @@ function copySQL(){
   });
 }
 
-/* SQL 생성 */
 function rtype(col,dl){
   const tp=col.type,ex=(col.extra||'').trim();
   if(dl==='mysql'){

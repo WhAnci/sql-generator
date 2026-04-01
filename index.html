@@ -29,7 +29,8 @@ input.bad{border-color:var(--dn)!important}
 .bd2{background:transparent;border:1px solid var(--dn);color:var(--dn);padding:5px 10px;font-size:.8rem}
 .bc{background:var(--s2);border:1px solid var(--bd);color:var(--ac);padding:6px 14px;font-size:.82rem}
 .bc.ok{background:var(--ok);color:#0f1117;border-color:var(--ok)}
-.cg{display:grid;grid-template-columns:1.5fr 1.6fr .85fr 1.3fr 2.6rem 2.6rem 2.6rem 2rem;gap:7px;align-items:start;margin-top:8px}
+/* col grid: name | type | size | default | PK | NN | UQ | FK | del */
+.cg{display:grid;grid-template-columns:1.5fr 1.6fr .85fr 1.3fr 2.6rem 2.6rem 2.6rem 2.6rem 2rem;gap:7px;align-items:start;margin-top:8px}
 .ch{font-size:.72rem;color:var(--mt);font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
 .cc{text-align:center}
 .cbw{display:flex;justify-content:center;padding-top:10px}
@@ -135,7 +136,7 @@ let tables=[], dialect='mysql', _t=0, _c=0;
 
 function uid(){return ++_t}
 function cid(){return ++_c}
-function newCol(){return{id:cid(),name:'',type:'VARCHAR',extra:'255',dflt:'',dc:'',pk:false,nn:false,fk:false,ft:'',fc:'',fd:'CASCADE'}}
+function newCol(){return{id:cid(),name:'',type:'VARCHAR',extra:'255',dflt:'',dc:'',pk:false,nn:false,uq:false,fk:false,ft:'',fc:'',fd:'CASCADE'}}
 function td(v){return TYPES.find(t=>t.v===v)||{}}
 
 function addTable(){
@@ -171,6 +172,7 @@ function sync(){
       const dc=row.querySelector('.cdc');if(dc)col.dc=dc.value;
       const pk=row.querySelector('.pk'); if(pk)col.pk=pk.checked;
       const nn=row.querySelector('.nn'); if(nn)col.nn=nn.checked;
+      const uq=row.querySelector('.uq'); if(uq)col.uq=uq.checked;
       const fk=row.querySelector('.fk'); if(fk)col.fk=fk.checked;
       const ft=row.querySelector('.ft'); if(ft)col.ft=ft.value;
       const fc=row.querySelector('.fc'); if(fc)col.fc=fc.value;
@@ -189,11 +191,11 @@ function validate(type,raw){
     if(isNaN(a)||isNaN(b))return{ok:false,msg:'Numbers only'};
     if(a>t.mv[0])return{ok:false,msg:`precision max ${t.mv[0]}`};
     if(b>t.mv[1])return{ok:false,msg:`scale max ${t.mv[1]}`};
-    if(b>a)return{ok:false,msg:'scale ≤ precision'};
+    if(b>a)return{ok:false,msg:'scale \u2264 precision'};
     return{ok:true};
   }
   const n=Number(raw);
-  if(!raw||isNaN(n)||n<1)return{ok:false,msg:'Enter a number ≥ 1'};
+  if(!raw||isNaN(n)||n<1)return{ok:false,msg:'Enter a number \u2265 1'};
   if(n>t.mv)return{ok:false,msg:`Max ${t.mv.toLocaleString()}`};
   return{ok:true};
 }
@@ -206,7 +208,7 @@ function selOpts(arr,valFn,lbFn,cur){
 
 function redraw(){
   const list=document.getElementById('tlist');
-  if(!tables.length){list.innerHTML='<div class="empty">Add a table to get started 👆</div>';renderSQL();return;}
+  if(!tables.length){list.innerHTML='<div class="empty">Add a table to get started \uD83D\uDC46</div>';renderSQL();return;}
 
   list.innerHTML=tables.map(t=>{
     const colRows=t.columns.map(col=>{
@@ -230,8 +232,9 @@ function redraw(){
   </div>
   <div class="cbw"><input type="checkbox" class="pk" ${col.pk?'checked':''} onchange="onInput()"></div>
   <div class="cbw"><input type="checkbox" class="nn" ${col.nn?'checked':''} onchange="onInput()"></div>
+  <div class="cbw"><input type="checkbox" class="uq" ${col.uq?'checked':''} onchange="onInput()"></div>
   <div class="cbw"><input type="checkbox" class="fk" ${col.fk?'checked':''} onchange="onFKToggle(${t.id},${col.id},this.checked)"></div>
-  <button class="btn bd2" style="margin-top:8px;padding:4px 7px" onclick="delCol(${t.id},${col.id})">✕</button>
+  <button class="btn bd2" style="margin-top:8px;padding:4px 7px" onclick="delCol(${t.id},${col.id})">&times;</button>
   ${col.fk?`<div class="fkpanel">
     <div class="fkrow"><label>Ref. Table</label>
       <select class="ft" style="flex:1" onchange="onFKTable(${t.id},${col.id},this.value)">
@@ -257,13 +260,14 @@ function redraw(){
         style="background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--tx);font-size:1rem;font-weight:700;width:220px;outline:none"
         oninput="onInput()">
     </div>
-    <button class="btn bd2" onclick="delTable(${t.id})">✕ Remove</button>
+    <button class="btn bd2" onclick="delTable(${t.id})">&times; Remove</button>
   </div>
   <div class="cg" style="margin-bottom:4px">
     <div class="ch">Column Name</div><div class="ch">Type</div><div class="ch">Size / Value</div>
     <div class="ch">Default</div>
     <div class="ch cc" title="Primary Key">PK</div>
     <div class="ch cc" title="NOT NULL">NN</div>
+    <div class="ch cc" title="UNIQUE">UQ</div>
     <div class="ch cc" title="Foreign Key">FK</div>
     <div></div>
   </div>
@@ -337,8 +341,8 @@ function copySQL(){
   if(!sql)return;
   navigator.clipboard.writeText(sql).then(()=>{
     const b=document.getElementById('copybtn');
-    b.textContent='✅ Copied!'; b.classList.add('ok');
-    setTimeout(()=>{b.textContent='📋 Copy';b.classList.remove('ok');},1800);
+    b.textContent='\u2705 Copied!'; b.classList.add('ok');
+    setTimeout(()=>{b.textContent='\uD83D\uDCCB Copy';b.classList.remove('ok');},1800);
   });
 }
 
@@ -391,6 +395,7 @@ function buildSQL(){
       const nm=col.name||`col_${ci+1}`;
       let l=`    ${nm} ${rtype(col,dialect)}`;
       if(col.nn)l+=' NOT NULL';
+      if(col.uq)l+=' UNIQUE';
       const d=col.dflt==='__c__'?col.dc:col.dflt;
       if(d)l+=` DEFAULT ${d}`;
       if(col.pk)l+=' PRIMARY KEY';

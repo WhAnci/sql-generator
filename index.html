@@ -14,7 +14,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-
 header{background:var(--s1);border-bottom:1px solid var(--bd);padding:16px 32px;display:flex;align-items:center;gap:12px}
 header h1{font-size:1.4rem;font-weight:700}
 .badge{font-size:.75rem;background:var(--ac);color:#fff;padding:2px 8px;border-radius:99px;font-weight:600}
-.wrap{max-width:1300px;margin:0 auto;padding:32px 20px;display:flex;flex-direction:column;gap:24px}
+.wrap{max-width:1400px;margin:0 auto;padding:32px 20px;display:flex;flex-direction:column;gap:24px}
 .card{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:24px}
 .lbl{font-size:.78rem;color:var(--mt);font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
 input[type=text],select{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:9px 11px;color:var(--tx);font-size:.9rem;outline:none;transition:border-color .2s;width:100%}
@@ -29,8 +29,8 @@ input.bad{border-color:var(--dn)!important}
 .bd2{background:transparent;border:1px solid var(--dn);color:var(--dn);padding:5px 10px;font-size:.8rem}
 .bc{background:var(--s2);border:1px solid var(--bd);color:var(--ac);padding:6px 14px;font-size:.82rem}
 .bc.ok{background:var(--ok);color:#0f1117;border-color:var(--ok)}
-/* col grid: name | type | size | default | PK | NN | UQ | FK | del */
-.cg{display:grid;grid-template-columns:1.5fr 1.6fr .85fr 1.3fr 2.6rem 2.6rem 2.6rem 2.6rem 2rem;gap:7px;align-items:start;margin-top:8px}
+/* col grid: name | type | size | default | on update | PK | NN | UQ | FK | del */
+.cg{display:grid;grid-template-columns:1.4fr 1.5fr .8fr 1.2fr 1.4fr 2.6rem 2.6rem 2.6rem 2.6rem 2rem;gap:7px;align-items:start;margin-top:8px}
 .ch{font-size:.72rem;color:var(--mt);font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
 .cc{text-align:center}
 .cbw{display:flex;justify-content:center;padding-top:10px}
@@ -71,7 +71,7 @@ pre{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:20
       <span style="font-size:1.05rem;font-weight:700">Tables</span>
       <button class="btn bp" onclick="addTable()">+ Add Table</button>
     </div>
-    <div class="tlist" id="tlist"><div class="empty">Add a table to get started 👆</div></div>
+    <div class="tlist" id="tlist"><div class="empty">Add a table to get started &#x1F446;</div></div>
   </div>
 
   <div class="card">
@@ -84,7 +84,7 @@ pre{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:20
     </div>
     <div class="outwrap">
       <pre id="sqlout"><span class="cm">-- Add tables and columns to generate SQL</span></pre>
-      <div class="outact"><button class="btn bc" id="copybtn" onclick="copySQL()">📋 Copy</button></div>
+      <div class="outact"><button class="btn bc" id="copybtn" onclick="copySQL()">&#x1F4CB; Copy</button></div>
     </div>
   </div>
 </div>
@@ -130,13 +130,19 @@ const DFLTS=[
   {v:"''",lb:"'' (empty string)"},{v:'NULL',lb:'NULL'},
   {v:'TRUE',lb:'TRUE'},{v:'FALSE',lb:'FALSE'},{v:'__c__',lb:'Custom...'},
 ];
+const ON_UPDATE_OPTS=[
+  {v:'',lb:'(none)'},
+  {v:'CURRENT_TIMESTAMP',lb:'CURRENT_TIMESTAMP'},
+  {v:'NOW()',lb:'NOW()'},
+  {v:'__c__',lb:'Custom...'},
+];
 const FKACT=['NO ACTION','RESTRICT','CASCADE','SET NULL','SET DEFAULT'];
 
 let tables=[], dialect='mysql', _t=0, _c=0;
 
 function uid(){return ++_t}
 function cid(){return ++_c}
-function newCol(){return{id:cid(),name:'',type:'VARCHAR',extra:'255',dflt:'',dc:'',pk:false,nn:false,uq:false,fk:false,ft:'',fc:'',fd:'CASCADE'}}
+function newCol(){return{id:cid(),name:'',type:'VARCHAR',extra:'255',dflt:'',dc:'',ou:'',ouc:'',pk:false,nn:false,uq:false,fk:false,ft:'',fc:'',fd:'CASCADE'}}
 function td(v){return TYPES.find(t=>t.v===v)||{}}
 
 function addTable(){
@@ -170,6 +176,8 @@ function sync(){
       const ex=row.querySelector('.cx'); if(ex)col.extra=ex.value;
       const df=row.querySelector('.cd'); if(df)col.dflt=df.value;
       const dc=row.querySelector('.cdc');if(dc)col.dc=dc.value;
+      const ou=row.querySelector('.ou'); if(ou)col.ou=ou.value;
+      const ouc=row.querySelector('.ouc');if(ouc)col.ouc=ouc.value;
       const pk=row.querySelector('.pk'); if(pk)col.pk=pk.checked;
       const nn=row.querySelector('.nn'); if(nn)col.nn=nn.checked;
       const uq=row.querySelector('.uq'); if(uq)col.uq=uq.checked;
@@ -208,13 +216,14 @@ function selOpts(arr,valFn,lbFn,cur){
 
 function redraw(){
   const list=document.getElementById('tlist');
-  if(!tables.length){list.innerHTML='<div class="empty">Add a table to get started \uD83D\uDC46</div>';renderSQL();return;}
+  if(!tables.length){list.innerHTML='<div class="empty">Add a table to get started &#x1F446;</div>';renderSQL();return;}
 
   list.innerHTML=tables.map(t=>{
     const colRows=t.columns.map(col=>{
       const tp=td(col.type);
       const hasX=!!tp.x;
       const isC=col.dflt==='__c__';
+      const isOUC=col.ou==='__c__';
       const vld=hasX?validate(col.type,col.extra||''):{ok:true};
       const otherT=tables.filter(o=>o.id!==t.id);
       const refT=tables.find(o=>String(o.id)===String(col.ft));
@@ -229,6 +238,10 @@ function redraw(){
   <div style="display:flex;gap:4px">
     <select class="cd" style="flex:1" onchange="onInput()">${selOpts(DFLTS,x=>x.v,x=>x.lb,col.dflt)}</select>
     <input type="text" class="cdc" value="${esc(col.dc||'')}" placeholder="value" style="width:72px;${isC?'':'display:none'}" oninput="onInput()">
+  </div>
+  <div style="display:flex;gap:4px">
+    <select class="ou" style="flex:1" onchange="onInput()">${selOpts(ON_UPDATE_OPTS,x=>x.v,x=>x.lb,col.ou)}</select>
+    <input type="text" class="ouc" value="${esc(col.ouc||'')}" placeholder="value" style="width:72px;${isOUC?'':'display:none'}" oninput="onInput()">
   </div>
   <div class="cbw"><input type="checkbox" class="pk" ${col.pk?'checked':''} onchange="onInput()"></div>
   <div class="cbw"><input type="checkbox" class="nn" ${col.nn?'checked':''} onchange="onInput()"></div>
@@ -265,6 +278,7 @@ function redraw(){
   <div class="cg" style="margin-bottom:4px">
     <div class="ch">Column Name</div><div class="ch">Type</div><div class="ch">Size / Value</div>
     <div class="ch">Default</div>
+    <div class="ch">ON UPDATE</div>
     <div class="ch cc" title="Primary Key">PK</div>
     <div class="ch cc" title="NOT NULL">NN</div>
     <div class="ch cc" title="UNIQUE">UQ</div>
@@ -398,6 +412,11 @@ function buildSQL(){
       if(col.uq)l+=' UNIQUE';
       const d=col.dflt==='__c__'?col.dc:col.dflt;
       if(d)l+=` DEFAULT ${d}`;
+      // ON UPDATE (MySQL only — PostgreSQL doesn't support inline ON UPDATE)
+      if(dialect==='mysql'&&col.ou){
+        const ouVal=col.ou==='__c__'?col.ouc:col.ou;
+        if(ouVal)l+=` ON UPDATE ${ouVal}`;
+      }
       if(col.pk)l+=' PRIMARY KEY';
       return l;
     });
@@ -424,7 +443,7 @@ function renderSQL(){
 }
 
 const KWS=['CREATE','TABLE','USE','PRIMARY','KEY','NOT','NULL','DEFAULT','AUTO_INCREMENT',
-  'SERIAL','UNIQUE','CHECK','IN','REFERENCES','FOREIGN','ON','DELETE','CASCADE',
+  'SERIAL','UNIQUE','CHECK','IN','REFERENCES','FOREIGN','ON','DELETE','UPDATE','CASCADE',
   'RESTRICT','SET','NO','ACTION','CONSTRAINT'];
 const TYS=[
   'DOUBLE PRECISION','AUTO_INCREMENT',

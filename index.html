@@ -214,6 +214,28 @@ function selOpts(arr,valFn,lbFn,cur){
   return arr.map(x=>`<option value="${esc(valFn(x))}"${cur===valFn(x)?' selected':''}>${esc(lbFn(x))}</option>`).join('');
 }
 
+/* Called when Default or ON UPDATE select changes — needs redraw to show/hide Custom input */
+function onSelectChange(tid,cid,sel,field){
+  sync();
+  const t=tables.find(t=>t.id===tid);
+  if(!t)return;
+  const col=t.columns.find(c=>c.id===cid);
+  if(!col)return;
+  col[field]=sel.value;
+  // Show/hide the custom text input without full redraw by toggling display directly
+  const row=document.querySelector(`[data-cid="${cid}"]`);
+  if(row){
+    if(field==='dflt'){
+      const inp=row.querySelector('.cdc');
+      if(inp)inp.style.display=sel.value==='__c__'?'':'none';
+    } else if(field==='ou'){
+      const inp=row.querySelector('.ouc');
+      if(inp)inp.style.display=sel.value==='__c__'?'':'none';
+    }
+  }
+  renderSQL();
+}
+
 function redraw(){
   const list=document.getElementById('tlist');
   if(!tables.length){list.innerHTML='<div class="empty">Add a table to get started &#x1F446;</div>';renderSQL();return;}
@@ -236,11 +258,11 @@ function redraw(){
     <div class="errtip">${vld.ok?'':esc(vld.msg)}</div>
   </div>
   <div style="display:flex;gap:4px">
-    <select class="cd" style="flex:1" onchange="onInput()">${selOpts(DFLTS,x=>x.v,x=>x.lb,col.dflt)}</select>
+    <select class="cd" style="flex:1" onchange="onSelectChange(${t.id},${col.id},this,'dflt')">${selOpts(DFLTS,x=>x.v,x=>x.lb,col.dflt)}</select>
     <input type="text" class="cdc" value="${esc(col.dc||'')}" placeholder="value" style="width:72px;${isC?'':'display:none'}" oninput="onInput()">
   </div>
   <div style="display:flex;gap:4px">
-    <select class="ou" style="flex:1" onchange="onInput()">${selOpts(ON_UPDATE_OPTS,x=>x.v,x=>x.lb,col.ou)}</select>
+    <select class="ou" style="flex:1" onchange="onSelectChange(${t.id},${col.id},this,'ou')">${selOpts(ON_UPDATE_OPTS,x=>x.v,x=>x.lb,col.ou)}</select>
     <input type="text" class="ouc" value="${esc(col.ouc||'')}" placeholder="value" style="width:72px;${isOUC?'':'display:none'}" oninput="onInput()">
   </div>
   <div class="cbw"><input type="checkbox" class="pk" ${col.pk?'checked':''} onchange="onInput()"></div>
@@ -412,7 +434,6 @@ function buildSQL(){
       if(col.uq)l+=' UNIQUE';
       const d=col.dflt==='__c__'?col.dc:col.dflt;
       if(d)l+=` DEFAULT ${d}`;
-      // ON UPDATE (MySQL only — PostgreSQL doesn't support inline ON UPDATE)
       if(dialect==='mysql'&&col.ou){
         const ouVal=col.ou==='__c__'?col.ouc:col.ou;
         if(ouVal)l+=` ON UPDATE ${ouVal}`;
